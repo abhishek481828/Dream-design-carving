@@ -1,9 +1,9 @@
 {
     "name": "dream-design-backend",
     "version": "1.0.0",
-    "main": "app.js",
+    "main": "index.js",
     "scripts": {
-        "start": "node app.js"
+        "start": "node index.js"
     },
     "dependencies": {
         "bcryptjs": "^3.0.2",
