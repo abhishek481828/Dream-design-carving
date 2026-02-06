@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import OrderList from "../components/OrderList";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import API_BASE_URL from "../config";
 
 const Dashboard = () => {
     const navigate = useNavigate();
@@ -30,7 +31,7 @@ const Dashboard = () => {
     const fetchOrders = async () => {
         try {
             const token = localStorage.getItem("token"); // Use user token
-            const res = await fetch("/api/orders/myorders", {
+            const res = await fetch(`${API_BASE_URL}/api/orders/myorders`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }

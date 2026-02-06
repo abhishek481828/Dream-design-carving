@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import ErrorBoundary from "../components/ErrorBoundary";
 import { FaCheckCircle } from "react-icons/fa";
 import AdminNav from "../components/AdminNav";
+import API_BASE_URL from "../config";
 import "./AdminProducts.css"; // Reuse existing styles
 
 export default function AdminMessages() {
@@ -12,7 +13,7 @@ export default function AdminMessages() {
 
     const fetchMessages = () => {
         setLoading(true);
-        fetch("/api/contact", {
+        fetch(`${API_BASE_URL}/api/contact`, {
             headers: { Authorization: `Bearer ${token}` }
         })
             .then(async res => {
@@ -35,7 +36,7 @@ export default function AdminMessages() {
 
     const markAsSeen = async (id) => {
         try {
-            const res = await fetch("/api/admin/mark-seen", {
+            const res = await fetch(`${API_BASE_URL}/api/admin/mark-seen`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

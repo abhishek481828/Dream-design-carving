@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
+import API_BASE_URL from "../config";
 
 const AdminNav = () => {
     const location = useLocation();
@@ -9,7 +10,7 @@ const AdminNav = () => {
     useEffect(() => {
         const fetchCounts = async () => {
             try {
-                const res = await fetch("/api/admin/unread-counts", {
+                const res = await fetch(`${API_BASE_URL}/api/admin/unread-counts`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 if (res.ok) {

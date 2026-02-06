@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import AdminNav from "../components/AdminNav";
+import API_BASE_URL from "../config";
 import "./AdminProducts.css";
 
-const API_URL = "/api/products";
+const API_URL = `${API_BASE_URL}/api/products`;
 
 const CATEGORY_LABELS = {
     doors: "Wooden Doors",

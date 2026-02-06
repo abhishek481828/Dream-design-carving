@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaUser, FaPhoneAlt, FaPalette, FaRegStickyNote, FaCalendarAlt, FaBoxOpen, FaCheckCircle, FaEye } from "react-icons/fa";
 import AdminNav from "../components/AdminNav";
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "";
+import API_BASE_URL from "../config";
 
 import "./AdminOrders.css";
 
@@ -16,7 +15,7 @@ export default function AdminOrders() {
   const fetchOrders = () => {
     setLoading(true);
     setError("");
-    fetch("/api/orders-admin", {
+    fetch(`${API_BASE_URL}/api/orders-admin`, {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(async res => {
@@ -45,7 +44,7 @@ export default function AdminOrders() {
 
   const markAsSeen = async (id) => {
     try {
-      const res = await fetch("/api/admin/mark-seen", {
+      const res = await fetch(`${API_BASE_URL}/api/admin/mark-seen`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -87,7 +86,7 @@ export default function AdminOrders() {
                 <div className="order-image-container">
                   {order.file ? (
                     <img
-                      src={`${BACKEND_URL}/uploads/${order.file}`}
+                      src={`${API_BASE_URL}/uploads/${order.file}`}
                       alt="Customer Design"
                       className="order-image"
                       onError={e => { e.target.style.display = 'none'; }}

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import API_BASE_URL from "../config";
 import "./AdminLogin.css";
 
 export default function AdminLogin({ onLogin }) {
@@ -17,7 +18,7 @@ export default function AdminLogin({ onLogin }) {
   const handleSubmit = async e => {
     e.preventDefault();
     setLoading(true);
-    const res = await fetch("/api/admin/login", {
+    const res = await fetch(`${API_BASE_URL}/api/admin/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form)

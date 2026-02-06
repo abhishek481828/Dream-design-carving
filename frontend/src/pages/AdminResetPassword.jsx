@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
+import API_BASE_URL from "../config";
 
 export default function AdminResetPassword() {
   const { token } = useParams();
@@ -10,7 +11,7 @@ export default function AdminResetPassword() {
   const handleSubmit = async e => {
     e.preventDefault();
     setMsg(""); setError("");
-    const res = await fetch(`/api/admin/reset-password/${token}`, {
+    const res = await fetch(`${API_BASE_URL}/api/admin/reset-password/${token}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ password })

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { formatCurrency } from "../utils/currency";
 import { useTranslation } from "react-i18next";
+import API_BASE_URL from "../config";
 
 import { FaWhatsapp } from 'react-icons/fa';
 
@@ -113,7 +114,7 @@ const CategoryProducts = () => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api/products?category=${categoryId}`);
+        const res = await fetch(`${API_BASE_URL}/api/products?category=${categoryId}`);
         const data = await res.json();
         setProducts(data);
       } catch (err) {

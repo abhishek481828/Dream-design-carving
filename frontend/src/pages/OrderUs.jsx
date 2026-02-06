@@ -1,5 +1,6 @@
 // src/pages/OrderUs.jsx
 import React, { useState } from "react";
+import API_BASE_URL from "../config";
 import "./OrderUs.css";
 import { FaUser, FaPhoneAlt, FaFileUpload, FaPalette, FaStickyNote, FaCheckCircle, FaStar } from "react-icons/fa";
 
@@ -31,7 +32,7 @@ export default function OrderUs() {
     Object.entries(form).forEach(([k, v]) => data.append(k, v));
 
     try {
-      await fetch("/api/custom-order", { method: "POST", body: data });
+      await fetch(`${API_BASE_URL}/api/custom-order`, { method: "POST", body: data });
       setSubmitted(true);
       setTimeout(() => setSubmitted(false), 4000);
       setForm({

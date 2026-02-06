@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import API_BASE_URL from "../config";
 
 export default function AdminForgotPassword() {
   const [email, setEmail] = useState("");
@@ -12,7 +13,7 @@ export default function AdminForgotPassword() {
     setMessage("");
     setError("");
     try {
-      const res = await fetch("/api/admin/forgot-password", {
+      const res = await fetch(`${API_BASE_URL}/api/admin/forgot-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
