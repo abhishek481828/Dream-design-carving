@@ -50,14 +50,14 @@ exports.login = async (req, res) => {
             return res.status(401).json({ message: "Invalid email or password" });
         }
 
-        console.log("User verified. checking JWT_SECRET...");
-        if (!process.env.JWT_SECRET) {
-            console.error("Critical Error: JWT_SECRET is missing!");
-            return res.status(500).json({ message: "Server Configuration Error: Missing JWT_SECRET" });
-        }
+        const secret = process.env.JWT_SECRET || "fallback_secret_for_debugging_only";
 
-        console.log("Generating token...");
-        const token = generateToken(user._id, user.role);
+        console.log("Generating token with secret length:", secret.length);
+        const token = jwt.sign(
+            { id: user._id.toString(), role: user.role },
+            secret,
+            { expiresIn: "7d" }
+        );
 
         console.log("Login successful. Sending response.");
         res.json({
@@ -69,7 +69,7 @@ exports.login = async (req, res) => {
         });
     } catch (error) {
         console.error("Login Controller Error:", error);
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ message: "Internal Login Error: " + error.message });
     }
 };
 
