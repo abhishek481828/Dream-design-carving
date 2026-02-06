@@ -11,22 +11,37 @@ const router = express.Router();
 
 // Admin login
 router.post("/login", async (req, res) => {
-  const { username, password } = req.body;
-  // Check email or username. User model uses email, but admin frontend might send username as email or we should support both if User model has username?
-  // User model has 'name' and 'email'. Admin login usually uses email.
-  // Existing Admin model had 'username'. I will assume frontend sends 'username' but it might be an email.
+  try {
+    const { username, password } = req.body;
+    console.log("Admin Login Attempt:", username);
 
-  // Let's assume username field in request body maps to email in User model for now, or check if User has username field.
-  // User model: name, email.
+    const user = await User.findOne({ email: username });
 
-  const user = await User.findOne({ email: username }); // Assuming username is email
+    if (!user) {
+      console.log("Admin Login: User not found");
+      return res.status(401).json({ message: "Invalid credentials or not an admin" });
+    }
 
-  if (!user || user.role !== "admin" || !(await user.comparePassword(password))) {
-    return res.status(401).json({ message: "Invalid credentials or not an admin" });
+    if (user.role !== "admin") {
+      console.log("Admin Login: Role is not admin (Role:", user.role, ")");
+      return res.status(401).json({ message: "Invalid credentials or not an admin" });
+    }
+
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
+      console.log("Admin Login: Password incorrect");
+      return res.status(401).json({ message: "Invalid credentials or not an admin" });
+    }
+
+    const secret = process.env.JWT_SECRET || "fallback_admin_secret";
+    const token = jwt.sign({ id: user._id, role: user.role }, secret, { expiresIn: "2h" });
+
+    console.log("Admin Login: Success");
+    res.json({ token });
+  } catch (err) {
+    console.error("Admin Login Error:", err);
+    res.status(500).json({ message: "Internal Admin Login Error" });
   }
-
-  const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "2h" });
-  res.json({ token });
 });
 
 // FORGOT PASSWORD
