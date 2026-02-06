@@ -36,20 +36,39 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
+        console.log("Login attempt for:", email);
 
         const user = await User.findOne({ email });
-        if (!user || !(await user.comparePassword(password))) {
+        if (!user) {
+            console.log("User not found");
             return res.status(401).json({ message: "Invalid email or password" });
         }
 
+        const isMatch = await user.comparePassword(password);
+        if (!isMatch) {
+            console.log("Password incorrect");
+            return res.status(401).json({ message: "Invalid email or password" });
+        }
+
+        console.log("User verified. checking JWT_SECRET...");
+        if (!process.env.JWT_SECRET) {
+            console.error("Critical Error: JWT_SECRET is missing!");
+            return res.status(500).json({ message: "Server Configuration Error: Missing JWT_SECRET" });
+        }
+
+        console.log("Generating token...");
+        const token = generateToken(user._id, user.role);
+
+        console.log("Login successful. Sending response.");
         res.json({
             _id: user._id,
             name: user.name,
             email: user.email,
             role: user.role,
-            token: generateToken(user._id, user.role),
+            token: token,
         });
     } catch (error) {
+        console.error("Login Controller Error:", error);
         res.status(500).json({ message: error.message });
     }
 };

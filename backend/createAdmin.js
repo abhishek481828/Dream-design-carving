@@ -1,28 +1,42 @@
-require('dotenv').config();
-const mongoose = require('mongoose');
-const Admin = require('./models/Admin');
+require("dotenv").config();
+const mongoose = require("mongoose");
+const User = require("./models/User");
 
-async function createAdmin() {
-  await mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+const createAdmin = async () => {
+  try {
+    // 1. Connect to Database
+    console.log("Connecting to MongoDB...");
+    await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log("Connected to MongoDB!");
 
-  const username = 'dreamdesign@222';
-  const password = 'admin123';
-  const email = 'abhishek481828@gmail.com'; // Use a real email for password reset
+    // 2. Check if admin already exists
+    const adminExists = await User.findOne({ email: "admin@example.com" });
+    if (adminExists) {
+      console.log("Admin user already exists!");
+      process.exit();
+    }
 
-  const exists = await Admin.findOne({ $or: [{ username }, { email }] });
-  if (exists) {
-    exists.username = username;
-    exists.password = password;
-    exists.email = email;
-    await exists.save();
-    console.log('Admin updated!');
-    process.exit(0);
+    // 3. Create Admin
+    const admin = new User({
+      name: "Admin User",
+      email: "admin@example.com",
+      password: "adminpassword123", // You can change this later
+      role: "admin",
+    });
+
+    await admin.save();
+    console.log("Admin created successfully!");
+    console.log("Email: admin@example.com");
+    console.log("Password: adminpassword123");
+
+    process.exit();
+  } catch (error) {
+    console.error("Error:", error.message);
+    process.exit(1);
   }
-
-  const admin = new Admin({ username, password, email });
-  await admin.save();
-  console.log('Admin created successfully!');
-  process.exit(0);
-}
+};
 
 createAdmin();
