@@ -56,6 +56,10 @@ app.use("/api/custom-order", customOrderRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
 
+app.get("/", (req, res) => {
+  res.send("API is running...");
+});
+
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
