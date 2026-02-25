@@ -27,6 +27,12 @@ exports.sendContactMail = async (req, res) => {
     // Respond immediately — don't wait for emails
     res.status(200).json({ success: true, message: 'Message sent successfully!' });
 
+    // Debug: log env vars presence
+    console.log("SMTP_USER set:", !!process.env.SMTP_USER);
+    console.log("SMTP_PASS set:", !!process.env.SMTP_PASS);
+    console.log("ADMIN_EMAIL:", process.env.ADMIN_EMAIL);
+    console.log("Customer email provided:", email);
+
     // Send emails in background
     const transporter = createTransporter();
 
