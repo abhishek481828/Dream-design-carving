@@ -1,37 +1,42 @@
 const multer = require('multer');
-const path = require('path');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('cloudinary').v2;
 
-// Set storage engine
-const storage = multer.diskStorage({
-    destination: './uploads/',
-    filename: function (req, file, cb) {
-        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
-    }
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Init upload
-const upload = multer({
-    storage: storage,
-    limits: { fileSize: 10000000 }, // 10MB limit
-    fileFilter: function (req, file, cb) {
-        checkFileType(file, cb);
-    }
+// Cloudinary storage for products
+const productStorage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: 'dream-design/products',
+    allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
+    transformation: [{ width: 1200, height: 1200, crop: 'limit', quality: 'auto' }],
+  },
 });
 
-// Check file type
-function checkFileType(file, cb) {
-    // Allowed ext
-    const filetypes = /jpeg|jpg|png|gif|webp/;
-    // Check ext
-    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-    // Check mime
-    const mimetype = filetypes.test(file.mimetype);
+// Cloudinary storage for custom order files
+const orderStorage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: 'dream-design/orders',
+    allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'webp', 'pdf'],
+    resource_type: 'auto',
+  },
+});
 
-    if (mimetype && extname) {
-        return cb(null, true);
-    } else {
-        cb('Error: Images Only!');
-    }
-}
+const uploadProduct = multer({
+  storage: productStorage,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+});
 
-module.exports = upload;
+const uploadOrder = multer({
+  storage: orderStorage,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+});
+
+module.exports = { uploadProduct, uploadOrder, cloudinary };

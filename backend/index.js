@@ -21,7 +21,21 @@ const app = express();
 app.use("/uploads", express.static("uploads"));
 
 // Middleware
-app.use(cors());
+const allowedOrigins = [
+  "https://dream-design-carving-bnmp.vercel.app",
+  "http://localhost:3000",
+  "http://localhost:3001"
+];
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true
+}));
 app.use(helmet({ crossOriginResourcePolicy: false })); // Secure Headers
 app.use(express.json({ limit: "10kb" })); // Body limit
 
