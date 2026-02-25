@@ -55,7 +55,7 @@ export default function ContactUs() {
               <div className="info-icon-box"><FaEnvelope /></div>
               <div className="info-content">
                 <h3>Email Us</h3>
-                <p><a href="mailto:cncdreamdesign@outlook.com" style={{ fontSize: '1rem', fontWeight: 'bold', textDecoration: 'underline', color: '#60a5fa' }}>cncdreamdesign@outlook.com</a></p>
+                <p><a href="mailto:vijaykant9988@gmail.com" style={{ fontSize: '1rem', fontWeight: 'bold', textDecoration: 'underline', color: '#60a5fa' }}>vijaykant9988@gmail.com</a></p>
                 <p>We'll respond within 24 hours.</p>
               </div>
             </div>

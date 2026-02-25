@@ -71,7 +71,7 @@ export default function Footer() {
           <div className="contact-item">
             <FaEnvelope className="contact-icon" />
             <div className="contact-text">
-              <a href="mailto:cncdreamdesign@outlook.com">cncdreamdesign@outlook.com</a>
+              <a href="mailto:vijaykant9988@gmail.com">vijaykant9988@gmail.com</a>
             </div>
           </div>
         </div>
