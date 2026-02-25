@@ -18,20 +18,25 @@ export default function AdminLogin({ onLogin }) {
   const handleSubmit = async e => {
     e.preventDefault();
     setLoading(true);
-    const res = await fetch(`${API_BASE_URL}/api/admin/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form)
-    });
-    const data = await res.json();
-    setLoading(false);
-    if (res.ok && data.token) {
-      localStorage.setItem("adminToken", data.token);
-      toast.success("Login Successful!");
-      onLogin();
-      navigate("/admin/orders");
-    } else {
-      toast.error(data.message || "Login failed");
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/admin/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form)
+      });
+      const data = await res.json();
+      setLoading(false);
+      if (res.ok && data.token) {
+        localStorage.setItem("adminToken", data.token);
+        toast.success("Login Successful!");
+        onLogin();
+        navigate("/admin/orders");
+      } else {
+        toast.error(data.message || "Login failed");
+      }
+    } catch (err) {
+      setLoading(false);
+      toast.error("Network error. Please check your connection and try again.");
     }
   };
 

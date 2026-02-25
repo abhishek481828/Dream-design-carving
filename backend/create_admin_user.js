@@ -9,7 +9,7 @@ mongoose.connect(process.env.MONGO_URI, {
     console.log("Connected to MongoDB");
 
     const email = "vijaykant9988@gmail.com";
-    const password = "Dreamdesign09";
+    const password = "@Vijay09";
     const name = "Admin User";
 
     const userExists = await User.findOne({ email });

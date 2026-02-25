@@ -46,50 +46,60 @@ router.post("/login", async (req, res) => {
 
 // FORGOT PASSWORD
 router.post("/forgot-password", async (req, res) => {
-  const { email } = req.body;
-  const user = await User.findOne({ email });
-  if (!user) return res.status(404).json({ message: "Email not found" });
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: "Email not found" });
 
-  const token = crypto.randomBytes(32).toString("hex");
-  user.resetToken = token;
-  user.resetTokenExpiry = Date.now() + 1000 * 60 * 30; // 30 minutes
-  await user.save();
+    const token = crypto.randomBytes(32).toString("hex");
+    user.resetToken = token;
+    user.resetTokenExpiry = Date.now() + 1000 * 60 * 30; // 30 minutes
+    await user.save();
 
-  // Configure your SMTP (use your real credentials)
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS
-    }
-  });
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS
+      }
+    });
 
-  const resetLink = `${process.env.FRONTEND_URL}/admin/reset-password/${token}`;
-  await transporter.sendMail({
-    to: user.email,
-    subject: "Admin Password Reset",
-    html: `<p>Click <a href="${resetLink}">here</a> to reset your password. This link is valid for 30 minutes.</p>`
-  });
+    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+    const resetLink = `${frontendUrl}/admin/reset-password/${token}`;
+    await transporter.sendMail({
+      to: user.email,
+      subject: "Admin Password Reset",
+      html: `<p>Click <a href="${resetLink}">here</a> to reset your password. This link is valid for 30 minutes.</p>`
+    });
 
-  res.json({ message: "Reset email sent" });
+    res.json({ message: "Reset email sent" });
+  } catch (err) {
+    console.error("Forgot Password Error:", err);
+    res.status(500).json({ message: "Failed to send reset email. Please try again later." });
+  }
 });
 
 // RESET PASSWORD
 router.post("/reset-password/:token", async (req, res) => {
-  const { token } = req.params;
-  const { password } = req.body;
-  const user = await User.findOne({
-    resetToken: token,
-    resetTokenExpiry: { $gt: Date.now() }
-  });
-  if (!user) return res.status(400).json({ message: "Invalid or expired token" });
+  try {
+    const { token } = req.params;
+    const { password } = req.body;
+    const user = await User.findOne({
+      resetToken: token,
+      resetTokenExpiry: { $gt: Date.now() }
+    });
+    if (!user) return res.status(400).json({ message: "Invalid or expired token" });
 
-  user.password = password; // Will be hashed by pre-save hook
-  user.resetToken = undefined;
-  user.resetTokenExpiry = undefined;
-  await user.save();
+    user.password = password; // Will be hashed by pre-save hook
+    user.resetToken = undefined;
+    user.resetTokenExpiry = undefined;
+    await user.save();
 
-  res.json({ message: "Password reset successful" });
+    res.json({ message: "Password reset successful" });
+  } catch (err) {
+    console.error("Reset Password Error:", err);
+    res.status(500).json({ message: "Failed to reset password. Please try again." });
+  }
 });
 
 // @desc    Get unread counts for orders and messages

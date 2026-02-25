@@ -5,7 +5,7 @@ export async function getProducts() {
   return res.json();
 }
 export async function submitOrder(formData) {
-  const res = await fetch(`${API_BASE_URL}/api/custom`, {
+  const res = await fetch(`${API_BASE_URL}/api/custom-order`, {
     method: "POST",
     body: formData
   });
