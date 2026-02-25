@@ -80,7 +80,7 @@ export default function AdminLogin({ onLogin }) {
         <form className="admin-login-form" onSubmit={handleOtpSubmit} autoComplete="off">
           <h2>Enter OTP</h2>
           <p style={{ textAlign: "center", color: "var(--text-secondary, #555)", margin: "0 0 1rem" }}>
-            A 6-digit code was sent to <strong>{form.username}</strong>.<br />
+            A 6-digit OTP was sent to <strong>abhishek481828@gmail.com</strong>.<br />
             It expires in <strong>5 minutes</strong>.
           </p>
           <input

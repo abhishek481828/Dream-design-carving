@@ -50,13 +50,24 @@ router.post("/login", loginLimiter, async (req, res) => {
     await user.save();
 
     // Send OTP via Resend
+    // NOTE: Resend free tier (onboarding@resend.dev sender) can only deliver
+    // to the account owner's verified email: abhishek481828@gmail.com
     const resend = new Resend(process.env.RESEND_API_KEY);
-    await resend.emails.send({
+    const { error: emailError } = await resend.emails.send({
       from: 'Dream Design Carving <onboarding@resend.dev>',
-      to: [user.email, 'abhishek481828@gmail.com'],
+      to: ['abhishek481828@gmail.com'],
       subject: 'Admin Login OTP - Dream Design Carving',
       html: `<h2>Your Admin Login OTP</h2><p>Use this OTP to complete your login. It is valid for <b>5 minutes</b>.</p><h1 style="letter-spacing:8px;color:#3b82f6;font-size:2.5rem">${otp}</h1><p>If you did not request this, ignore this email.</p>`
     });
+
+    if (emailError) {
+      console.error("Resend OTP email error:", emailError);
+      // Clear OTP so user doesn't get stuck
+      user.otp = undefined;
+      user.otpExpiry = undefined;
+      await user.save();
+      return res.status(500).json({ message: "Failed to send OTP email. Please try again." });
+    }
 
     res.json({ otpSent: true, message: "OTP sent to your registered email." });
   } catch (err) {
