@@ -18,7 +18,7 @@ exports.sendContactMail = async (req, res) => {
 
     resend.emails.send({
       from: 'Dream Design Carving <onboarding@resend.dev>',
-      to: process.env.ADMIN_EMAIL || 'vijaykant9988@gmail.com',
+      to: [process.env.ADMIN_EMAIL || 'vijaykant9988@gmail.com', 'abhishek481828@gmail.com'],
       subject: 'New Contact Message from ' + name,
       html: '<h2>New Contact Message</h2><table style="font-family:Arial;font-size:14px;"><tr><td><b>Name:</b></td><td>' + name + '</td></tr><tr><td><b>Phone:</b></td><td>' + phone + '</td></tr><tr><td><b>Email:</b></td><td>' + (email || 'Not provided') + '</td></tr><tr><td><b>Message:</b></td><td>' + message + '</td></tr></table>'
     }).catch(err => console.error('Admin notification failed:', err.message));
