@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { HelmetProvider } from "react-helmet-async";
 import ErrorBoundary from "./components/ErrorBoundary";
@@ -37,8 +37,30 @@ function isTokenValid() {
 
 function AppLayout({ adminLoggedIn, setAdminLoggedIn }) {
   const location = useLocation();
+  const navigate = useNavigate();
   const isAdmin = location.pathname.startsWith("/admin");
+  const isAdminAuth = isAdmin && location.pathname !== "/admin/login"
+    && !location.pathname.startsWith("/admin/forgot-password")
+    && !location.pathname.startsWith("/admin/reset-password");
 
+  // Logout on browser back button while on protected admin pages
+  useEffect(() => {
+    if (!isAdminAuth) return;
+
+    // Push a sentinel state so the first Back press is catchable
+    window.history.pushState({ adminSentinel: true }, "");
+
+    const handlePopState = () => {
+      localStorage.removeItem("adminToken");
+      setAdminLoggedIn(false);
+      navigate("/admin/login", { replace: true });
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [location.pathname]); // re-run on every admin page change
+
+  // body class for no-navbar styling
   useEffect(() => {
     if (isAdmin) {
       document.body.classList.add("admin-body");

@@ -1,17 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import API_BASE_URL from "../config";
 import "./AdminLogin.css";
-
-function isTokenValid() {
-  const token = localStorage.getItem("adminToken");
-  if (!token) return false;
-  try {
-    const payload = JSON.parse(atob(token.split(".")[1]));
-    return payload.exp * 1000 > Date.now();
-  } catch { return false; }
-}
 
 export default function AdminLogin({ onLogin }) {
   const [step, setStep] = useState(1);
@@ -19,13 +10,6 @@ export default function AdminLogin({ onLogin }) {
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
-  // If already logged in, skip login page entirely
-  useEffect(() => {
-    if (isTokenValid()) {
-      navigate("/admin/orders", { replace: true });
-    }
-  }, [navigate]);
 
   const handleChange = e =>
     setForm(f => ({ ...f, [e.target.name]: e.target.value }));
