@@ -9,6 +9,7 @@ const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const hpp = require("hpp");
 
+const initAdmin = require("./initAdmin");
 const adminRoutes = require("./routes/adminRoutes");
 const orderAdminRoutes = require("./routes/orderAdminRoutes");
 const productRoutes = require("./routes/productRoutes");
@@ -64,8 +65,9 @@ app.get("/", (req, res) => {
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-}).then(() => {
+}).then(async () => {
   console.log("Connected to MongoDB");
+  await initAdmin();
 }).catch((err) => {
   console.error("MongoDB connection error:", err.message);
 });
