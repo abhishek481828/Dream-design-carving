@@ -1,10 +1,17 @@
 const nodemailer = require('nodemailer');
-const Contact = require('../models/Contact'); // Import Contact model
+const Contact = require('../models/Contact');
+
+const createTransporter = () => nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS
+  }
+});
 
 exports.sendContactMail = async (req, res) => {
   const { name, email, message, phone } = req.body;
 
-  // Revised validation: Phone is now required, Email is optional
   if (!name || !phone || !message) {
     return res.status(400).json({ error: 'Name, Phone, and Message are required.' });
   }
@@ -14,31 +21,38 @@ exports.sendContactMail = async (req, res) => {
     const newContact = new Contact({ name, email, phone, message });
     await newContact.save();
 
-    // Configure transporter
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.SMTP_USER || 'abhishek481828@gmail.com', // Use env var if available
-        pass: process.env.SMTP_PASS || 'your-app-password-here'
-      }
-    });
+    const transporter = createTransporter();
 
-    // Email options
-    const mailOptions = {
-      from: email || 'no-reply@dreamdesignCarving.com', // Fallback if no email provided
-      to: 'abhishek481828@gmail.com',
-      subject: `New Contact Message from ${name}`,
-      text: `Name: ${name}\nPhone: ${phone}\nEmail: ${email || 'Not provided'}\nMessage: ${message}`
-    };
+    // Notify business owner
+    await transporter.sendMail({
+      from: `"Dream Design Carving" <${process.env.SMTP_USER}>`,
+      to: process.env.ADMIN_EMAIL || process.env.SMTP_USER,
+      subject: `📩 New Contact Message from ${name}`,
+      html: `
+        <h2>New Contact Message</h2>
+        <table style="font-family:Arial;font-size:14px;">
+          <tr><td><b>Name:</b></td><td>${name}</td></tr>
+          <tr><td><b>Phone:</b></td><td>${phone}</td></tr>
+          <tr><td><b>Email:</b></td><td>${email || 'Not provided'}</td></tr>
+          <tr><td><b>Message:</b></td><td>${message}</td></tr>
+        </table>
+      `
+    }).catch(err => console.error("Admin notification email failed:", err.message));
 
-    // Send email (optional, don't fail if email fails but DB succeeds? Or fail both?)
-    // For now, let's try sending email, but if it fails, we still have it in DB.
-    try {
-      await transporter.sendMail(mailOptions);
-    } catch (emailError) {
-      console.error("Email sending failed:", emailError);
-      // Constructive: We saved to DB, so we can return success but maybe warn?
-      // For now, return success as DB save is the critical part requested.
+    // Send confirmation to customer (if email provided)
+    if (email) {
+      await transporter.sendMail({
+        from: `"Dream Design Carving" <${process.env.SMTP_USER}>`,
+        to: email,
+        subject: `✅ We received your message — Dream Design Carving`,
+        html: `
+          <h2>Thank you, ${name}!</h2>
+          <p>We have received your message and will get back to you within 24 hours.</p>
+          <p><b>Your message:</b> ${message}</p>
+          <br/>
+          <p>Best regards,<br/>Dream Design Carving Services Pvt. Ltd.<br/>📞 +977 9840028822</p>
+        `
+      }).catch(err => console.error("Customer confirmation email failed:", err.message));
     }
 
     res.status(200).json({ success: true, message: 'Message sent successfully!' });

@@ -8,6 +8,7 @@ export default function OrderUs() {
   const [form, setForm] = useState({
     fullName: "",
     contactNumber: "",
+    email: "",
     designName: "",
     file: null,
     material: "",
@@ -38,6 +39,7 @@ export default function OrderUs() {
       setForm({
         fullName: "",
         contactNumber: "",
+        email: "",
         designName: "",
         file: null,
         material: "",
@@ -81,6 +83,17 @@ export default function OrderUs() {
               value={form.contactNumber}
               onChange={handleChange}
               required
+            />
+          </div>
+          <div className="orderus-group">
+            <label htmlFor="email">✉ Email Address</label>
+            <input
+              name="email"
+              id="email"
+              type="email"
+              placeholder="your@email.com (for confirmation)"
+              value={form.email}
+              onChange={handleChange}
             />
           </div>
         </div>
