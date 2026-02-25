@@ -3,6 +3,7 @@ import ErrorBoundary from "../components/ErrorBoundary";
 import { FaCheckCircle } from "react-icons/fa";
 import AdminNav from "../components/AdminNav";
 import API_BASE_URL from "../config";
+import { adminFetch } from "../utils/adminFetch";
 import "./AdminProducts.css"; // Reuse existing styles
 
 export default function AdminMessages() {
@@ -12,23 +13,22 @@ export default function AdminMessages() {
     const [currentPage, setCurrentPage] = useState(1);
     const token = localStorage.getItem("adminToken");
 
-    const fetchMessages = () => {
+    const fetchMessages = async () => {
         setLoading(true);
-        fetch(`${API_BASE_URL}/api/contact`, {
-            headers: { Authorization: `Bearer ${token}` }
-        })
-            .then(async res => {
-                if (!res.ok) {
-                    const data = await res.json().catch(() => ({}));
-                    throw new Error(data.message || "Failed to fetch messages");
-                }
-                return res.json();
-            })
-            .then(data => {
-                setMessages(Array.isArray(data) ? data : []);
-            })
-            .catch(err => setError(err.message))
-            .finally(() => setLoading(false));
+        try {
+            const res = await adminFetch(`${API_BASE_URL}/api/contact`);
+            if (!res) return; // 401 - redirecting
+            if (!res.ok) {
+                const data = await res.json().catch(() => ({}));
+                throw new Error(data.message || "Failed to fetch messages");
+            }
+            const data = await res.json();
+            setMessages(Array.isArray(data) ? data : []);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
@@ -41,15 +41,12 @@ export default function AdminMessages() {
 
     const markAsSeen = async (id) => {
         try {
-            const res = await fetch(`${API_BASE_URL}/api/admin/mark-seen`, {
+            const res = await adminFetch(`${API_BASE_URL}/api/admin/mark-seen`, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ type: "message", id })
             });
-            if (res.ok) {
+            if (res && res.ok) {
                 setMessages(messages.map(m => m._id === id ? { ...m, isSeen: true } : m));
             }
         } catch (error) {

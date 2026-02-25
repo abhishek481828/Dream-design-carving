@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { FaUser, FaPhoneAlt, FaPalette, FaRegStickyNote, FaCalendarAlt, FaBoxOpen, FaCheckCircle, FaEye } from "react-icons/fa";
 import AdminNav from "../components/AdminNav";
 import API_BASE_URL from "../config";
+import { adminFetch } from "../utils/adminFetch";
 
 import "./AdminOrders.css";
 
@@ -13,30 +14,23 @@ export default function AdminOrders() {
   const [currentPage, setCurrentPage] = useState(1);
   const token = localStorage.getItem("adminToken");
 
-  const fetchOrders = () => {
+  const fetchOrders = async () => {
     setLoading(true);
     setError("");
-    fetch(`${API_BASE_URL}/api/orders-admin`, {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(async res => {
-        if (!res.ok) {
-          const data = await res.json().catch(() => ({}));
-          throw new Error(data.message || "Failed to fetch orders");
-        }
-        return res.json();
-      })
-      .then(data => {
-        if (Array.isArray(data)) {
-          setOrders(data);
-        } else {
-          setOrders([]);
-        }
-      })
-      .catch(err => {
-        setError(err.message);
-      })
-      .finally(() => setLoading(false));
+    try {
+      const res = await adminFetch(`${API_BASE_URL}/api/orders-admin`);
+      if (!res) return; // 401 - redirecting
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.message || "Failed to fetch orders");
+      }
+      const data = await res.json();
+      setOrders(Array.isArray(data) ? data : []);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -49,15 +43,12 @@ export default function AdminOrders() {
 
   const markAsSeen = async (id) => {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/admin/mark-seen`, {
+      const res = await adminFetch(`${API_BASE_URL}/api/admin/mark-seen`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ type: "order", id })
       });
-      if (res.ok) {
+      if (res && res.ok) {
         setOrders(orders.map(o => o._id === id ? { ...o, isSeen: true } : o));
       }
     } catch (error) {

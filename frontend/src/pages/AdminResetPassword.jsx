@@ -10,6 +10,10 @@ export default function AdminResetPassword() {
 
   const handleSubmit = async e => {
     e.preventDefault();
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters.");
+      return;
+    }
     setMsg(""); setError("");
     const res = await fetch(`${API_BASE_URL}/api/admin/reset-password/${token}`, {
       method: "POST",
@@ -28,9 +32,10 @@ export default function AdminResetPassword() {
         <input
           name="password"
           type="password"
-          placeholder="New password"
+          placeholder="New password (min 8 characters)"
           value={password}
           onChange={e => setPassword(e.target.value)}
+          minLength={8}
           required
         />
         <button type="submit">Reset Password</button>

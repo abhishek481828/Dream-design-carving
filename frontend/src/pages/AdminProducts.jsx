@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import AdminNav from "../components/AdminNav";
 import API_BASE_URL from "../config";
+import { adminFetch } from "../utils/adminFetch";
 import "./AdminProducts.css";
 
 const API_URL = `${API_BASE_URL}/api/products`;
@@ -81,13 +82,12 @@ export default function AdminProducts() {
                 formData.append("image", form.image);
             }
 
-            const res = await fetch(url, {
+            const res = await adminFetch(url, {
                 method,
-                headers: {
-                    "Authorization": `Bearer ${adminToken}`
-                },
+                headers: {},
                 body: formData
             });
+            if (!res) return; // 401 - redirecting
 
             const data = await res.json();
 
@@ -119,12 +119,10 @@ export default function AdminProducts() {
         if (!window.confirm("Are you sure you want to delete this product?")) return;
 
         try {
-            const res = await fetch(`${API_URL}/${id}`, {
-                method: "DELETE",
-                headers: {
-                    "Authorization": `Bearer ${adminToken}`
-                }
+            const res = await adminFetch(`${API_URL}/${id}`, {
+                method: "DELETE"
             });
+            if (!res) return; // 401 - redirecting
 
             const data = await res.json();
 

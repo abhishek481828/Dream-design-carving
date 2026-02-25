@@ -24,8 +24,19 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./styles/main.css";
 
+function isTokenValid() {
+  const token = localStorage.getItem("adminToken");
+  if (!token) return false;
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.exp * 1000 > Date.now();
+  } catch {
+    return false;
+  }
+}
+
 function App() {
-  const [adminLoggedIn, setAdminLoggedIn] = useState(!!localStorage.getItem("adminToken"));
+  const [adminLoggedIn, setAdminLoggedIn] = useState(isTokenValid());
 
   return (
     <HelmetProvider>

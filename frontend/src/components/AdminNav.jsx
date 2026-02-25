@@ -7,6 +7,11 @@ const AdminNav = () => {
     const [counts, setCounts] = useState({ unreadOrders: 0, unreadMessages: 0 });
     const token = localStorage.getItem("adminToken");
 
+    const handleLogout = () => {
+        localStorage.removeItem("adminToken");
+        window.location.href = "/admin/login";
+    };
+
     useEffect(() => {
         const fetchCounts = async () => {
             try {
@@ -76,6 +81,12 @@ const AdminNav = () => {
             >
                 Messages {counts.unreadMessages > 0 && <span style={badgeStyle}>{counts.unreadMessages}</span>}
             </Link>
+            <button
+                onClick={handleLogout}
+                style={{ marginLeft: '10px', padding: '5px 14px', borderRadius: '5px', border: '1px solid #ef4444', background: 'transparent', color: '#ef4444', fontWeight: '500', cursor: 'pointer', fontSize: '0.9rem' }}
+            >
+                Logout
+            </button>
         </div>
     );
 };
