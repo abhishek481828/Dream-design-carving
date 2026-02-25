@@ -36,30 +36,26 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
-        console.log("Login attempt for:", email);
 
         const user = await User.findOne({ email });
         if (!user) {
-            console.log("User not found");
             return res.status(401).json({ message: "Invalid email or password" });
         }
 
         const isMatch = await user.comparePassword(password);
         if (!isMatch) {
-            console.log("Password incorrect");
             return res.status(401).json({ message: "Invalid email or password" });
         }
 
-        const secret = process.env.JWT_SECRET || "fallback_secret_for_debugging_only";
+        const secret = process.env.JWT_SECRET;
+        if (!secret) return res.status(500).json({ message: "Server configuration error" });
 
-        console.log("Generating token with secret length:", secret.length);
         const token = jwt.sign(
             { id: user._id.toString(), role: user.role },
             secret,
             { expiresIn: "7d" }
         );
 
-        console.log("Login successful. Sending response.");
         res.json({
             _id: user._id,
             name: user.name,
@@ -68,8 +64,8 @@ exports.login = async (req, res) => {
             token: token,
         });
     } catch (error) {
-        console.error("Login Controller Error:", error);
-        res.status(500).json({ message: "Internal Login Error: " + error.message });
+        console.error("Login Error:", error.message);
+        res.status(500).json({ message: "Internal Login Error" });
     }
 };
 

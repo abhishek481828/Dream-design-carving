@@ -1,45 +1,52 @@
 const express = require("express");
 const User = require("../models/User");
 const crypto = require("crypto");
-const nodemailer = require("nodemailer");
+const { Resend } = require('resend');
 const jwt = require("jsonwebtoken");
+const rateLimit = require("express-rate-limit");
 const { protect, admin } = require("../middleware/auth");
 const Contact = require("../models/Contact");
 const Order = require("../models/Order");
 const CustomOrder = require("../models/CustomOrder");
 const router = express.Router();
 
+// Strict rate limiter for login — 5 attempts per 15 minutes
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  message: { message: "Too many login attempts. Please try again in 15 minutes." },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 // Admin login
-router.post("/login", async (req, res) => {
+router.post("/login", loginLimiter, async (req, res) => {
   try {
     const { username, password } = req.body;
-    console.log("Admin Login Attempt:", username);
 
     const user = await User.findOne({ email: username });
 
     if (!user) {
-      console.log("Admin Login: User not found");
       return res.status(401).json({ message: "Invalid credentials or not an admin" });
     }
 
     if (user.role !== "admin") {
-      console.log("Admin Login: Role is not admin (Role:", user.role, ")");
       return res.status(401).json({ message: "Invalid credentials or not an admin" });
     }
 
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-      console.log("Admin Login: Password incorrect");
       return res.status(401).json({ message: "Invalid credentials or not an admin" });
     }
 
-    const secret = process.env.JWT_SECRET || "fallback_admin_secret";
+    const secret = process.env.JWT_SECRET;
+    if (!secret) return res.status(500).json({ message: "Server configuration error" });
+
     const token = jwt.sign({ id: user._id, role: user.role }, secret, { expiresIn: "2h" });
 
-    console.log("Admin Login: Success");
     res.json({ token });
   } catch (err) {
-    console.error("Admin Login Error:", err);
+    console.error("Admin Login Error:", err.message);
     res.status(500).json({ message: "Internal Admin Login Error" });
   }
 });
@@ -56,19 +63,14 @@ router.post("/forgot-password", async (req, res) => {
     user.resetTokenExpiry = Date.now() + 1000 * 60 * 30; // 30 minutes
     await user.save();
 
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS
-      }
-    });
-
+    const resend = new Resend(process.env.RESEND_API_KEY);
     const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
     const resetLink = `${frontendUrl}/admin/reset-password/${token}`;
-    await transporter.sendMail({
+
+    await resend.emails.send({
+      from: 'Dream Design Carving <onboarding@resend.dev>',
       to: user.email,
-      subject: "Admin Password Reset",
+      subject: 'Admin Password Reset',
       html: `<p>Click <a href="${resetLink}">here</a> to reset your password. This link is valid for 30 minutes.</p>`
     });
 
