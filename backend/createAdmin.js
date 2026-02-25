@@ -2,9 +2,12 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const User = require("./models/User");
 
+const ADMIN_EMAIL = "admin@dreamdesign.com";
+const ADMIN_PASSWORD = "Admin@1234";
+const ADMIN_NAME = "Admin User";
+
 const createAdmin = async () => {
   try {
-    // 1. Connect to Database
     console.log("Connecting to MongoDB...");
     await mongoose.connect(process.env.MONGO_URI, {
       useNewUrlParser: true,
@@ -12,25 +15,26 @@ const createAdmin = async () => {
     });
     console.log("Connected to MongoDB!");
 
-    // 2. Check if admin already exists
-    const adminExists = await User.findOne({ email: "admin@example.com" });
-    if (adminExists) {
-      console.log("Admin user already exists!");
-      process.exit();
+    let admin = await User.findOne({ email: ADMIN_EMAIL });
+    if (admin) {
+      // Reset password for existing admin
+      admin.password = ADMIN_PASSWORD;
+      await admin.save();
+      console.log("Admin password reset successfully!");
+    } else {
+      admin = new User({
+        name: ADMIN_NAME,
+        email: ADMIN_EMAIL,
+        password: ADMIN_PASSWORD,
+        role: "admin",
+      });
+      await admin.save();
+      console.log("Admin created successfully!");
     }
 
-    // 3. Create Admin
-    const admin = new User({
-      name: "Admin User",
-      email: "admin@example.com",
-      password: "adminpassword123", // You can change this later
-      role: "admin",
-    });
-
-    await admin.save();
-    console.log("Admin created successfully!");
-    console.log("Email: admin@example.com");
-    console.log("Password: adminpassword123");
+    console.log("--- Admin Credentials ---");
+    console.log("Email:   ", ADMIN_EMAIL);
+    console.log("Password:", ADMIN_PASSWORD);
 
     process.exit();
   } catch (error) {
