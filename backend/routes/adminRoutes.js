@@ -19,11 +19,11 @@ const loginLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-// OTP rate limiter — 3 attempts per 10 minutes
+// OTP rate limiter — 10 attempts per 15 minutes
 const otpLimiter = rateLimit({
-  windowMs: 10 * 60 * 1000,
-  max: 3,
-  message: { message: "Too many OTP attempts. Please try again in 10 minutes." },
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: { message: "Too many OTP attempts. Please try again in 15 minutes." },
   standardHeaders: true,
   legacyHeaders: false,
 });
@@ -43,11 +43,10 @@ router.post("/login", loginLimiter, async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials or not an admin" });
     }
 
-    // Generate 6-digit OTP
+    // Generate 6-digit OTP — use updateOne to bypass pre-save hooks
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    user.otp = otp;
-    user.otpExpiry = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
-    await user.save();
+    const otpExpiry = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
+    await User.updateOne({ _id: user._id }, { $set: { otp, otpExpiry } });
 
     // Send OTP via Resend
     // NOTE: Resend free tier (onboarding@resend.dev sender) can only deliver
@@ -63,9 +62,7 @@ router.post("/login", loginLimiter, async (req, res) => {
     if (emailError) {
       console.error("Resend OTP email error:", emailError);
       // Clear OTP so user doesn't get stuck
-      user.otp = undefined;
-      user.otpExpiry = undefined;
-      await user.save();
+      await User.updateOne({ _id: user._id }, { $unset: { otp: "", otpExpiry: "" } });
       return res.status(500).json({ message: "Failed to send OTP email. Please try again." });
     }
 
@@ -91,9 +88,7 @@ router.post("/verify-otp", otpLimiter, async (req, res) => {
     }
 
     if (new Date() > user.otpExpiry) {
-      user.otp = undefined;
-      user.otpExpiry = undefined;
-      await user.save();
+      await User.updateOne({ _id: user._id }, { $unset: { otp: "", otpExpiry: "" } });
       return res.status(400).json({ message: "OTP has expired. Please login again." });
     }
 
@@ -102,9 +97,7 @@ router.post("/verify-otp", otpLimiter, async (req, res) => {
     }
 
     // Clear OTP after successful use
-    user.otp = undefined;
-    user.otpExpiry = undefined;
-    await user.save();
+    await User.updateOne({ _id: user._id }, { $unset: { otp: "", otpExpiry: "" } });
 
     const secret = process.env.JWT_SECRET;
     if (!secret) return res.status(500).json({ message: "Server configuration error" });
