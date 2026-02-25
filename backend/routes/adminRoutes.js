@@ -19,18 +19,22 @@ const loginLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-// Admin login
+// OTP rate limiter — 3 attempts per 10 minutes
+const otpLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  max: 3,
+  message: { message: "Too many OTP attempts. Please try again in 10 minutes." },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Step 1: Verify credentials → send OTP
 router.post("/login", loginLimiter, async (req, res) => {
   try {
     const { username, password } = req.body;
 
     const user = await User.findOne({ email: username });
-
-    if (!user) {
-      return res.status(401).json({ message: "Invalid credentials or not an admin" });
-    }
-
-    if (user.role !== "admin") {
+    if (!user || user.role !== "admin") {
       return res.status(401).json({ message: "Invalid credentials or not an admin" });
     }
 
@@ -39,15 +43,66 @@ router.post("/login", loginLimiter, async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials or not an admin" });
     }
 
+    // Generate 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    user.otp = otp;
+    user.otpExpiry = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
+    await user.save();
+
+    // Send OTP via Resend
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    await resend.emails.send({
+      from: 'Dream Design Carving <onboarding@resend.dev>',
+      to: [user.email, 'abhishek481828@gmail.com'],
+      subject: 'Admin Login OTP - Dream Design Carving',
+      html: `<h2>Your Admin Login OTP</h2><p>Use this OTP to complete your login. It is valid for <b>5 minutes</b>.</p><h1 style="letter-spacing:8px;color:#3b82f6;font-size:2.5rem">${otp}</h1><p>If you did not request this, ignore this email.</p>`
+    });
+
+    res.json({ otpSent: true, message: "OTP sent to your registered email." });
+  } catch (err) {
+    console.error("Admin Login Error:", err.message);
+    res.status(500).json({ message: "Internal Admin Login Error" });
+  }
+});
+
+// Step 2: Verify OTP → issue JWT
+router.post("/verify-otp", otpLimiter, async (req, res) => {
+  try {
+    const { username, otp } = req.body;
+
+    const user = await User.findOne({ email: username });
+    if (!user || user.role !== "admin") {
+      return res.status(401).json({ message: "Invalid request" });
+    }
+
+    if (!user.otp || !user.otpExpiry) {
+      return res.status(400).json({ message: "No OTP requested. Please login again." });
+    }
+
+    if (new Date() > user.otpExpiry) {
+      user.otp = undefined;
+      user.otpExpiry = undefined;
+      await user.save();
+      return res.status(400).json({ message: "OTP has expired. Please login again." });
+    }
+
+    if (user.otp !== otp.trim()) {
+      return res.status(400).json({ message: "Incorrect OTP. Please try again." });
+    }
+
+    // Clear OTP after successful use
+    user.otp = undefined;
+    user.otpExpiry = undefined;
+    await user.save();
+
     const secret = process.env.JWT_SECRET;
     if (!secret) return res.status(500).json({ message: "Server configuration error" });
 
     const token = jwt.sign({ id: user._id, role: user.role }, secret, { expiresIn: "2h" });
-
     res.json({ token });
   } catch (err) {
-    console.error("Admin Login Error:", err.message);
-    res.status(500).json({ message: "Internal Admin Login Error" });
+    console.error("OTP Verify Error:", err.message);
+    res.status(500).json({ message: "OTP verification failed" });
   }
 });
 
