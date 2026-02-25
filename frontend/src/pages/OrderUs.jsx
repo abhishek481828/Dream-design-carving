@@ -1,5 +1,6 @@
 // src/pages/OrderUs.jsx
 import React, { useState } from "react";
+import { Helmet } from "react-helmet-async";
 import API_BASE_URL from "../config";
 import "./OrderUs.css";
 import { FaUser, FaPhoneAlt, FaFileUpload, FaPalette, FaStickyNote, FaCheckCircle, FaStar } from "react-icons/fa";
@@ -54,6 +55,13 @@ export default function OrderUs() {
 
   return (
     <div className="orderus-page">
+      <Helmet>
+        <title>Order Custom Wood Carving | Dream Design Carving</title>
+        <meta name="description" content="Place a custom wood carving order with Dream Design Carving Services. Share your design ideas and get a personalized quote within 24 hours." />
+        <meta property="og:title" content="Order Custom Wood Carving | Dream Design Carving" />
+        <meta property="og:description" content="Share your design ideas and get a personalized quote within 24 hours." />
+        <link rel="canonical" href="https://dream-design-carving-bnmp.vercel.app/order" />
+      </Helmet>
       <form className="orderus-form" onSubmit={handleSubmit} autoComplete="off">
         <h1 className="orderus-title">Start Your Custom Project</h1>
         <p className="orderus-desc">

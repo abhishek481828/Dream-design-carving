@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import './AboutUs.css';
 import { FaHammer, FaDraftingCompass, FaLeaf, FaHandsHelping } from 'react-icons/fa';
 import photo2 from '../assets/photo2.jpeg';
@@ -27,7 +28,14 @@ const AboutUs = () => {
 
   return (
     <div className="about-container">
-      {/* Hero Section */}
+      <Helmet>
+        <title>About Us | Dream Design Carving Services</title>
+        <meta name="description" content="Learn about Dream Design Carving Services Pvt. Ltd. — our story, our craftsmen, and our passion for handcrafted wood art since 2019." />
+        <meta property="og:title" content="About Us | Dream Design Carving Services" />
+        <meta property="og:description" content="Our story, our craftsmen, and our passion for handcrafted wood art since 2019." />
+        <link rel="canonical" href="https://dream-design-carving-bnmp.vercel.app/about" />
+      </Helmet>
+      {/* Hero Section */}}
       <section className="about-hero">
         <div className="hero-content">
           <h1 className="hero-title">

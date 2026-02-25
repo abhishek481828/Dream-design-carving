@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 
 // Import images
@@ -391,6 +392,13 @@ const Designs = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Our Designs | Dream Design Carving Services</title>
+        <meta name="description" content="Explore our handcrafted wood design categories — wooden doors, furniture, sculptures, decorative panels and custom designs from Nepal." />
+        <meta property="og:title" content="Our Designs | Dream Design Carving Services" />
+        <meta property="og:description" content="Explore handcrafted wooden doors, furniture, sculptures, decorative panels and custom designs." />
+        <link rel="canonical" href="https://dream-design-carving-bnmp.vercel.app/designs" />
+      </Helmet>
       <style>{keyframes}</style>
       <div className="designs-container" style={containerStyles}>
         <div style={backgroundPattern} />

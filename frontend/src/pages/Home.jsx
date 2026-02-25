@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import "./Home.css";
 import heroImage from "../assets/hero-image.jpg";
 import photo5 from "../assets/photo5.png";
@@ -27,7 +28,14 @@ export default function Home() {
 
   return (
     <div className="home-different">
-      {/* Split Hero Section */}
+      <Helmet>
+        <title>Dream Design Carving | Handcrafted Wood Art from Nepal</title>
+        <meta name="description" content="Premium handcrafted wooden doors, furniture, sculptures and custom carvings from Nepal. Order custom wood designs from Dream Design Carving Services." />
+        <meta property="og:title" content="Dream Design Carving | Handcrafted Wood Art from Nepal" />
+        <meta property="og:description" content="Premium handcrafted wooden doors, furniture, sculptures and custom carvings from Nepal." />
+        <link rel="canonical" href="https://dream-design-carving-bnmp.vercel.app/" />
+      </Helmet>
+      {/* Split Hero Section */}}
       <section className="split-hero">
         <div className="split-hero-left animated-fadein">
           <h1>

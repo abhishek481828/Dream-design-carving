@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { toast } from 'react-toastify';
 import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaClock } from 'react-icons/fa';
 import './ContactUs.css';
@@ -31,6 +32,13 @@ export default function ContactUs() {
 
   return (
     <div className="contact-page">
+      <Helmet>
+        <title>Contact Us | Dream Design Carving Services</title>
+        <meta name="description" content="Contact Dream Design Carving Services for custom wood carving orders, consultations and quotes. Located in Nepal." />
+        <meta property="og:title" content="Contact Us | Dream Design Carving Services" />
+        <meta property="og:description" content="Get in touch for custom wood carving orders, consultations and quotes." />
+        <link rel="canonical" href="https://dream-design-carving-bnmp.vercel.app/contact" />
+      </Helmet>
       <div className="contact-container">
         <div className="contact-header">
           <h1 className="contact-title">Get in Touch</h1>

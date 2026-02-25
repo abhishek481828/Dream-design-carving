@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useState } from "react";
+import { HelmetProvider } from "react-helmet-async";
 import ErrorBoundary from "./components/ErrorBoundary";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -27,6 +28,7 @@ function App() {
   const [adminLoggedIn, setAdminLoggedIn] = useState(!!localStorage.getItem("adminToken"));
 
   return (
+    <HelmetProvider>
     <ThemeProvider>
       <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <ToastContainer position="top-right" autoClose={3000} />
@@ -68,6 +70,7 @@ function App() {
         <Footer />
       </BrowserRouter>
     </ThemeProvider>
+    </HelmetProvider>
   );
 }
 
