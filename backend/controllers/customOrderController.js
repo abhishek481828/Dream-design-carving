@@ -6,36 +6,31 @@ const createTransporter = () => nodemailer.createTransport({
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS
-  }
+  },
+  connectionTimeout: 5000,
+  greetingTimeout: 5000,
+  socketTimeout: 5000
 });
 
 exports.createOrder = async (req, res) => {
   try {
     const { fullName, contactNumber, email, designName, material, notes } = req.body;
 
-    // Basic validation
     if (!fullName || !contactNumber || !designName || !material) {
       return res.status(400).json({ message: "Please fill in all required fields." });
     }
 
-    // Cloudinary returns file URL as req.file.path
     const file = req.file ? req.file.path : null;
-    const order = new CustomOrder({
-      fullName,
-      contactNumber,
-      email,
-      designName,
-      material,
-      notes,
-      file
-    });
-
+    const order = new CustomOrder({ fullName, contactNumber, email, designName, material, notes, file });
     await order.save();
 
+    // Respond immediately — don't wait for emails
+    res.status(201).json({ message: "Order received successfully" });
+
+    // Send emails in background
     const transporter = createTransporter();
 
-    // Notify business owner
-    await transporter.sendMail({
+    transporter.sendMail({
       from: `"Dream Design Carving" <${process.env.SMTP_USER}>`,
       to: process.env.ADMIN_EMAIL || process.env.SMTP_USER,
       subject: `🛒 New Custom Order from ${fullName}`,
@@ -53,9 +48,8 @@ exports.createOrder = async (req, res) => {
       `
     }).catch(err => console.error("Admin order notification failed:", err.message));
 
-    // Send confirmation to customer (if email provided)
     if (email) {
-      await transporter.sendMail({
+      transporter.sendMail({
         from: `"Dream Design Carving" <${process.env.SMTP_USER}>`,
         to: email,
         subject: `✅ Your Custom Order is Received — Dream Design Carving`,
@@ -74,7 +68,6 @@ exports.createOrder = async (req, res) => {
       }).catch(err => console.error("Customer order confirmation failed:", err.message));
     }
 
-    res.status(201).json({ message: "Order received successfully" });
   } catch (error) {
     console.error("Custom Order Error:", error.message);
     res.status(500).json({ message: "Failed to submit order. Please try again." });

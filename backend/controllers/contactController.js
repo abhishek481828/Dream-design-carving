@@ -6,7 +6,10 @@ const createTransporter = () => nodemailer.createTransport({
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS
-  }
+  },
+  connectionTimeout: 5000,
+  greetingTimeout: 5000,
+  socketTimeout: 5000
 });
 
 exports.sendContactMail = async (req, res) => {
@@ -17,14 +20,17 @@ exports.sendContactMail = async (req, res) => {
   }
 
   try {
-    // Save to Database
+    // Save to Database first
     const newContact = new Contact({ name, email, phone, message });
     await newContact.save();
 
+    // Respond immediately — don't wait for emails
+    res.status(200).json({ success: true, message: 'Message sent successfully!' });
+
+    // Send emails in background
     const transporter = createTransporter();
 
-    // Notify business owner
-    await transporter.sendMail({
+    transporter.sendMail({
       from: `"Dream Design Carving" <${process.env.SMTP_USER}>`,
       to: process.env.ADMIN_EMAIL || process.env.SMTP_USER,
       subject: `📩 New Contact Message from ${name}`,
@@ -39,9 +45,8 @@ exports.sendContactMail = async (req, res) => {
       `
     }).catch(err => console.error("Admin notification email failed:", err.message));
 
-    // Send confirmation to customer (if email provided)
     if (email) {
-      await transporter.sendMail({
+      transporter.sendMail({
         from: `"Dream Design Carving" <${process.env.SMTP_USER}>`,
         to: email,
         subject: `✅ We received your message — Dream Design Carving`,
@@ -55,10 +60,18 @@ exports.sendContactMail = async (req, res) => {
       }).catch(err => console.error("Customer confirmation email failed:", err.message));
     }
 
-    res.status(200).json({ success: true, message: 'Message sent successfully!' });
   } catch (error) {
     console.error("Contact Error:", error);
     res.status(500).json({ error: 'Failed to send message.' });
+  }
+};
+
+exports.getContactMessages = async (req, res) => {
+  try {
+    const messages = await Contact.find().sort({ createdAt: -1 });
+    res.json(messages);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch messages" });
   }
 };
 
