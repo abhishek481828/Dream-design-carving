@@ -10,6 +10,7 @@ export default function AdminOrders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   const token = localStorage.getItem("adminToken");
 
   const fetchOrders = () => {
@@ -41,6 +42,10 @@ export default function AdminOrders() {
   useEffect(() => {
     fetchOrders();
   }, [token]);
+
+  const ITEMS_PER_PAGE = 8;
+  const totalPages = Math.ceil(orders.length / ITEMS_PER_PAGE);
+  const pagedOrders = orders.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
   const markAsSeen = async (id) => {
     try {
@@ -79,8 +84,9 @@ export default function AdminOrders() {
         orders.length === 0 ? (
           <div className="empty-state">No orders found.</div>
         ) : (
+          <>
           <div className="orders-grid">
-            {orders.map(order => (
+            {pagedOrders.map(order => (
               <div key={order._id} className={`order-card ${order.isSeen ? 'seen' : 'unseen'}`}>
                 {!order.isSeen && <div className="unseen-badge">New</div>}
                 <div className="order-image-container">
@@ -118,6 +124,14 @@ export default function AdminOrders() {
               </div>
             ))}
           </div>
+          {totalPages > 1 && (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', padding: '1.5rem 0' }}>
+              <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} style={{ padding: '6px 16px', borderRadius: '6px', border: '1px solid #cbd5e1', background: currentPage === 1 ? '#f1f5f9' : 'white', cursor: currentPage === 1 ? 'not-allowed' : 'pointer', color: '#334155' }}>Prev</button>
+              <span style={{ color: '#64748b', fontSize: '0.9rem' }}>Page {currentPage} of {totalPages} ({orders.length} total)</span>
+              <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} style={{ padding: '6px 16px', borderRadius: '6px', border: '1px solid #cbd5e1', background: currentPage === totalPages ? '#f1f5f9' : 'white', cursor: currentPage === totalPages ? 'not-allowed' : 'pointer', color: '#334155' }}>Next</button>
+            </div>
+          )}
+          </>
         )
       )}
     </div>

@@ -141,8 +141,12 @@ export default function AdminProducts() {
     };
 
     const [activeCategory, setActiveCategory] = useState("doors");
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 10;
 
     const filteredProducts = products.filter(p => p.category === activeCategory);
+    const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
+    const pagedProducts = filteredProducts.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
     // ... existing handlers ...
 
@@ -174,7 +178,7 @@ export default function AdminProducts() {
                     <button
                         key={key}
                         className={`category-tab-btn ${activeCategory === key ? 'active' : ''}`}
-                        onClick={() => setActiveCategory(key)}
+                        onClick={() => { setActiveCategory(key); setCurrentPage(1); }}
                     >
                         {label}
                     </button>
@@ -237,6 +241,7 @@ export default function AdminProducts() {
 
             <div className="product-list">
                 {loading ? <div style={{ padding: '2rem', textAlign: 'center', color: '#64748b' }}>Loading products...</div> : (
+                    <>
                     <table>
                         <thead>
                             <tr>
@@ -268,7 +273,7 @@ export default function AdminProducts() {
                                         </button>
                                     </td>
                                 </tr>
-                            ) : filteredProducts.map(p => (
+                            ) : pagedProducts.map(p => (
                                 <tr key={p._id}>
                                     <td><img src={p.image} alt={p.name} className="table-img" /></td>
                                     <td>
@@ -285,6 +290,14 @@ export default function AdminProducts() {
                             ))}
                         </tbody>
                     </table>
+                    {totalPages > 1 && (
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', padding: '1.5rem 0' }}>
+                            <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} style={{ padding: '6px 16px', borderRadius: '6px', border: '1px solid #cbd5e1', background: currentPage === 1 ? '#f1f5f9' : 'white', cursor: currentPage === 1 ? 'not-allowed' : 'pointer', color: '#334155' }}>Prev</button>
+                            <span style={{ color: '#64748b', fontSize: '0.9rem' }}>Page {currentPage} of {totalPages} ({filteredProducts.length} total)</span>
+                            <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} style={{ padding: '6px 16px', borderRadius: '6px', border: '1px solid #cbd5e1', background: currentPage === totalPages ? '#f1f5f9' : 'white', cursor: currentPage === totalPages ? 'not-allowed' : 'pointer', color: '#334155' }}>Next</button>
+                        </div>
+                    )}
+                    </>
                 )}
             </div>
         </div>
