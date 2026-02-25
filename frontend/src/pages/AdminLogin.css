@@ -1,10 +1,233 @@
+/* Admin Login Page - matches website dark navy theme */
 .admin-login-page {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(120deg, #f8fafc 0%, #e9ecef 100%);
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 40%, #334155 80%, #475569 100%);
+  background-attachment: fixed;
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
 }
+
+/* Subtle radial glow blobs like main site */
+.admin-login-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(251, 191, 36, 0.05) 0%, transparent 60%);
+}
+
+/* Card */
+.admin-login-form {
+  position: relative;
+  background: rgba(30, 41, 59, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  box-shadow:
+    0 25px 60px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(251, 191, 36, 0.06);
+  padding: 44px 36px 36px;
+  max-width: 400px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: loginFadeIn 0.4s ease;
+}
+
+@keyframes loginFadeIn {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Brand header */
+.admin-login-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.admin-login-lock {
+  width: 52px;
+  height: 52px;
+  background: linear-gradient(135deg, rgba(251,191,36,0.15), rgba(59,130,246,0.15));
+  border: 1px solid rgba(251, 191, 36, 0.25);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.admin-login-form h2 {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+}
+
+.admin-login-subtitle {
+  font-size: 0.88rem;
+  color: rgba(241, 245, 249, 0.5);
+  text-align: center;
+  margin: 0;
+  letter-spacing: 0.3px;
+}
+
+/* Divider */
+.admin-login-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.07);
+  margin: 2px 0;
+}
+
+/* Labels */
+.admin-login-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.admin-login-field label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: rgba(241, 245, 249, 0.65);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* Inputs */
+.admin-login-form input {
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 1rem;
+  background: rgba(15, 23, 42, 0.6);
+  color: #f1f5f9;
+  transition: border 0.2s, box-shadow 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.admin-login-form input::placeholder {
+  color: rgba(241, 245, 249, 0.3);
+}
+
+.admin-login-form input:focus {
+  border: 1px solid rgba(251, 191, 36, 0.5);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.1);
+  background: rgba(15, 23, 42, 0.8);
+}
+
+/* Primary button */
+.admin-login-form button[type="submit"] {
+  margin-top: 4px;
+  background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #f59e0b 100%);
+  background-size: 200% auto;
+  color: #0f172a;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 13px 0;
+  border: none;
+  border-radius: 10px;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: background-position 0.4s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 4px 20px rgba(251, 191, 36, 0.3);
+}
+
+.admin-login-form button[type="submit"]:hover:not(:disabled) {
+  background-position: right center;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 26px rgba(251, 191, 36, 0.45);
+}
+
+.admin-login-form button[type="submit"]:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Back button */
+.admin-login-back-btn {
+  background: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: rgba(241, 245, 249, 0.65) !important;
+  font-size: 0.92rem !important;
+  font-weight: 500 !important;
+  padding: 10px 0 !important;
+  border-radius: 10px !important;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s !important;
+  box-shadow: none !important;
+  letter-spacing: 0 !important;
+}
+
+.admin-login-back-btn:hover {
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  color: #f1f5f9 !important;
+}
+
+/* Forgot password link */
+.admin-login-form a {
+  color: rgba(251, 191, 36, 0.75);
+  text-decoration: none;
+  font-size: 0.88rem;
+  transition: color 0.2s;
+}
+
+.admin-login-form a:hover {
+  color: #fbbf24;
+}
+
+/* OTP info text */
+.admin-login-otp-info {
+  text-align: center;
+  font-size: 0.88rem;
+  color: rgba(241, 245, 249, 0.55);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.admin-login-otp-info strong {
+  color: rgba(241, 245, 249, 0.85);
+}
+
+/* Footer note */
+.admin-login-footer {
+  text-align: center;
+  font-size: 0.78rem;
+  color: rgba(241, 245, 249, 0.25);
+  margin-top: 4px;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .admin-login-form {
+    padding: 32px 22px 28px;
+  }
+
+  .admin-login-form h2 {
+    font-size: 1.3rem;
+  }
+}
+
 
 .admin-login-form {
   background: #fff;
