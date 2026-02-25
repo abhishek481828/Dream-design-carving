@@ -14,6 +14,11 @@ body {
   /* Push content down to account for fixed header */
 }
 
+/* Admin pages have their own nav — remove the public navbar offset */
+body.admin-body {
+  padding-top: 0;
+}
+
 /* Global Background Pattern Overlay */
 body::before {
   content: "";

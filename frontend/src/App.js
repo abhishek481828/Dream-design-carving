@@ -1,5 +1,5 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useState } from "react";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { HelmetProvider } from "react-helmet-async";
 import ErrorBoundary from "./components/ErrorBoundary";
 import Navbar from "./components/Navbar";
@@ -35,52 +35,68 @@ function isTokenValid() {
   }
 }
 
+function AppLayout({ adminLoggedIn, setAdminLoggedIn }) {
+  const location = useLocation();
+  const isAdmin = location.pathname.startsWith("/admin");
+
+  useEffect(() => {
+    if (isAdmin) {
+      document.body.classList.add("admin-body");
+    } else {
+      document.body.classList.remove("admin-body");
+    }
+    return () => document.body.classList.remove("admin-body");
+  }, [isAdmin]);
+
+  return (
+    <>
+      {!isAdmin && <Navbar />}
+      <Routes>
+        {/* Public routes */}
+        <Route path="/" element={<Home />} />
+        <Route path="/order" element={<OrderUs />} />
+        <Route path="/designs" element={<Designs />} />
+        <Route path="/category/:categoryId" element={<CategoryProducts />} />
+        <Route path="/product-details" element={<ProductDetails />} />
+        <Route path="/about" element={<AboutUs />} />
+        <Route path="/contact" element={<ContactUs />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+
+        {/* Admin routes */}
+        <Route path="/admin/login" element={<AdminLogin onLogin={() => setAdminLoggedIn(true)} />} />
+        <Route
+          path="/admin/orders"
+          element={
+            adminLoggedIn
+              ? <ErrorBoundary><AdminOrders /></ErrorBoundary>
+              : <AdminLogin onLogin={() => setAdminLoggedIn(true)} />
+          }
+        />
+        <Route path="/admin/products" element={adminLoggedIn ? <AdminProducts /> : <AdminLogin onLogin={() => setAdminLoggedIn(true)} />} />
+        <Route path="/admin/messages" element={adminLoggedIn ? <AdminMessages /> : <AdminLogin onLogin={() => setAdminLoggedIn(true)} />} />
+        <Route path="/admin/forgot-password" element={<AdminForgotPassword />} />
+        <Route path="/admin/reset-password/:token" element={<AdminResetPassword />} />
+        <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
+
+        {/* 404 Route */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+      {!isAdmin && <Footer />}
+    </>
+  );
+}
+
 function App() {
   const [adminLoggedIn, setAdminLoggedIn] = useState(isTokenValid());
 
   return (
     <HelmetProvider>
-    <ThemeProvider>
-      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-        <ToastContainer position="top-right" autoClose={3000} />
-        <Navbar />
-        <Routes>
-          {/* Public routes */}
-          <Route path="/" element={<Home />} />
-          <Route path="/order" element={<OrderUs />} />
-          <Route path="/designs" element={<Designs />} />
-          <Route path="/category/:categoryId" element={<CategoryProducts />} />
-          <Route path="/product-details" element={<ProductDetails />} />
-          <Route path="/about" element={<AboutUs />} />
-          <Route path="/contact" element={<ContactUs />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-
-          {/* Admin routes */}
-          <Route path="/admin/login" element={<AdminLogin onLogin={() => setAdminLoggedIn(true)} />} />
-          <Route
-            path="/admin/orders"
-            element={
-              adminLoggedIn
-                ? (
-                  <ErrorBoundary>
-                    <AdminOrders />
-                  </ErrorBoundary>
-                )
-                : <AdminLogin onLogin={() => setAdminLoggedIn(true)} />
-            }
-          />
-          <Route path="/admin/products" element={adminLoggedIn ? <AdminProducts /> : <AdminLogin onLogin={() => setAdminLoggedIn(true)} />} />
-          <Route path="/admin/messages" element={adminLoggedIn ? <AdminMessages /> : <AdminLogin onLogin={() => setAdminLoggedIn(true)} />} />
-          <Route path="/admin/forgot-password" element={<AdminForgotPassword />} />
-          <Route path="/admin/reset-password/:token" element={<AdminResetPassword />} />
-          <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
-
-          {/* 404 Route */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-        <Footer />
-      </BrowserRouter>
-    </ThemeProvider>
+      <ThemeProvider>
+        <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+          <ToastContainer position="top-right" autoClose={3000} />
+          <AppLayout adminLoggedIn={adminLoggedIn} setAdminLoggedIn={setAdminLoggedIn} />
+        </BrowserRouter>
+      </ThemeProvider>
     </HelmetProvider>
   );
 }
