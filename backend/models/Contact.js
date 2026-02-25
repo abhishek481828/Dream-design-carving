@@ -9,4 +9,7 @@ const ContactSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now }
 });
 
+ContactSchema.index({ isSeen: 1 });
+ContactSchema.index({ createdAt: -1 });
+
 module.exports = mongoose.model("Contact", ContactSchema);

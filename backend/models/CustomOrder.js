@@ -12,4 +12,7 @@ const CustomOrderSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
+CustomOrderSchema.index({ isSeen: 1 });
+CustomOrderSchema.index({ createdAt: -1 });
+
 module.exports = mongoose.model("CustomOrder", CustomOrderSchema);
