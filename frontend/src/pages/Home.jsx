@@ -35,7 +35,7 @@ export default function Home() {
         <meta property="og:description" content="Premium handcrafted wooden doors, furniture, sculptures and custom carvings from Nepal." />
         <link rel="canonical" href="https://dream-design-carving-bnmp.vercel.app/" />
       </Helmet>
-      {/* Split Hero Section */}}
+      {/* Split Hero Section */}
       <section className="split-hero">
         <div className="split-hero-left animated-fadein">
           <h1>
