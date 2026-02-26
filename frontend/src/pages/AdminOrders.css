@@ -253,3 +253,44 @@
     .detail-label { min-width: auto; }
     .unseen-badge { font-size: 0.7rem; padding: 2px 8px; }
 }
+
+.order-img-modal {
+  position: fixed;
+  z-index: 9999;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(10,10,11,0.97);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+  animation: fadeInModal 0.2s;
+}
+.order-img-modal-img {
+  max-width: 90vw;
+  max-height: 90vh;
+  border-radius: 10px;
+  box-shadow: 0 4px 32px 0 #000a;
+  background: #18181c;
+  border: 2px solid #23232a;
+}
+.order-img-modal-close {
+  position: absolute;
+  top: 32px;
+  right: 48px;
+  font-size: 2.5rem;
+  color: #fff;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 10000;
+  font-weight: 900;
+  text-shadow: 0 2px 8px #000a;
+  transition: color 0.2s;
+}
+.order-img-modal-close:hover {
+  color: #ff3e3e;
+}
+@keyframes fadeInModal {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

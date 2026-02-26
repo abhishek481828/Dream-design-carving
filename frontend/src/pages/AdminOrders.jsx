@@ -12,6 +12,7 @@ export default function AdminOrders() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [modalImg, setModalImg] = useState(null);
   const token = localStorage.getItem("adminToken");
 
   const fetchOrders = async () => {
@@ -77,6 +78,12 @@ export default function AdminOrders() {
           <div className="empty-state">No orders found.</div>
         ) : (
           <>
+          {modalImg && (
+            <div className="order-img-modal" onClick={() => setModalImg(null)}>
+              <img src={modalImg} alt="Full Preview" className="order-img-modal-img" />
+              <button className="order-img-modal-close" onClick={e => { e.stopPropagation(); setModalImg(null); }}>×</button>
+            </div>
+          )}
           <div className="orders-grid">
             {pagedOrders.map(order => (
               <div key={order._id} className={`order-card ${order.isSeen ? 'seen' : 'unseen'}`}>
@@ -84,9 +91,11 @@ export default function AdminOrders() {
                 <div className="order-image-container">
                   {order.file ? (
                     <img
-                      src={`${API_BASE_URL}/uploads/${order.file}`}
+                      src={order.file}
                       alt="Customer Design"
                       className="order-image"
+                      onClick={() => setModalImg(order.file)}
+                      style={{ cursor: 'zoom-in' }}
                       onError={e => { e.target.style.display = 'none'; }}
                     />
                   ) : (

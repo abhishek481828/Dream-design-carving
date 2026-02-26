@@ -145,20 +145,25 @@
 
 .product-form button[type="submit"] {
     grid-column: 1 / -1;
-    background: #10b981;
-    color: white;
+    background: transparent;
+    color: #e2e2e7;
     padding: 14px;
-    border: none;
-    border-radius: 8px;
+    border: 1.5px solid #3a3a40;
+    border-radius: 6px;
     font-size: 1rem;
+    font-family: 'JetBrains Mono', monospace;
     font-weight: 700;
     cursor: pointer;
     margin-top: 1rem;
-    transition: background 0.2s;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
 }
 
 .product-form button[type="submit"]:hover {
-    background: #059669;
+    background: #18181c;
+    color: #fff;
+    border-color: #fff;
 }
 
 /* Table Styling */
