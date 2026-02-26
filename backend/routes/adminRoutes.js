@@ -3,6 +3,9 @@ const User = require("../models/User");
 const crypto = require("crypto");
 const { Resend } = require('resend');
 const jwt = require("jsonwebtoken");
+
+// Instantiate once at module level — not on every request
+const resend = new Resend(process.env.RESEND_API_KEY);
 const rateLimit = require("express-rate-limit");
 const { protect, admin } = require("../middleware/auth");
 const Contact = require("../models/Contact");
@@ -48,25 +51,22 @@ router.post("/login", loginLimiter, async (req, res) => {
     const otpExpiry = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
     await User.updateOne({ _id: user._id }, { $set: { otp, otpExpiry } });
 
-    // Send OTP via Resend
-    // NOTE: Resend free tier (onboarding@resend.dev sender) can only deliver
-    // to the account owner's verified email: abhishek481828@gmail.com
-    const resend = new Resend(process.env.RESEND_API_KEY);
-    const { error: emailError } = await resend.emails.send({
+    // Respond immediately — email is sent in the background so the user isn't waiting
+    res.json({ otpSent: true, message: "OTP sent to your registered email." });
+
+    // Fire-and-forget: send OTP email asynchronously after responding
+    resend.emails.send({
       from: 'Dream Design Carving <onboarding@resend.dev>',
       to: ['abhishek481828@gmail.com'],
       subject: 'Admin Login OTP - Dream Design Carving',
       html: `<h2>Your Admin Login OTP</h2><p>Use this OTP to complete your login. It is valid for <b>5 minutes</b>.</p><h1 style="letter-spacing:8px;color:#3b82f6;font-size:2.5rem">${otp}</h1><p>If you did not request this, ignore this email.</p>`
-    });
-
-    if (emailError) {
-      console.error("Resend OTP email error:", emailError);
-      // Clear OTP so user doesn't get stuck
-      await User.updateOne({ _id: user._id }, { $unset: { otp: "", otpExpiry: "" } });
-      return res.status(500).json({ message: "Failed to send OTP email. Please try again." });
-    }
-
-    res.json({ otpSent: true, message: "OTP sent to your registered email." });
+    }).then(({ error }) => {
+      if (error) {
+        console.error("Resend OTP email error:", error);
+        // Clear OTP so user doesn't get stuck with an undelivered OTP
+        User.updateOne({ _id: user._id }, { $unset: { otp: "", otpExpiry: "" } }).catch(console.error);
+      }
+    }).catch(err => console.error("Resend unexpected error:", err));
   } catch (err) {
     console.error("Admin Login Error:", err.message);
     res.status(500).json({ message: "Internal Admin Login Error" });
@@ -122,7 +122,6 @@ router.post("/forgot-password", async (req, res) => {
     user.resetTokenExpiry = Date.now() + 1000 * 60 * 30; // 30 minutes
     await user.save();
 
-    const resend = new Resend(process.env.RESEND_API_KEY);
     const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
     const resetLink = `${frontendUrl}/admin/reset-password/${token}`;
 
