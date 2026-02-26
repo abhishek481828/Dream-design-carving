@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --basalt-deep: #0a0a0b;
+            --basalt-surface: #121214;
+            --basalt-edge: #1f1f23;
+            --machined-glow: rgba(255, 255, 255, 0.07);
+            --accent-active: #ffffff;
+            --accent-danger: #ff3e3e;
+            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--basalt-deep);
+            color: #ececec;
+            font-family: 'Inter', sans-serif;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            overflow: hidden;
+            background-image: 
+                radial-gradient(circle at 2vw 2vh, rgba(255,255,255, 0.03) 0%, transparent 40%),
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            background-blend-mode: overlay;
+        }
+
+        /* The Monolith Container */
+        .dashboard-rail {
+            position: relative;
+            height: 90vh;
+            width: 320px;
+            margin-left: 5vw;
+            background: var(--basalt-surface);
+            border: 1px solid var(--basalt-edge);
+            box-shadow: 
+                40px 0 80px rgba(0,0,0,0.5),
+                inset 1px 1px 0 rgba(255,255,255,0.05);
+            display: flex;
+            flex-direction: column;
+            padding: 40px 0;
+            clip-path: polygon(0 0, 100% 0, 100% 95%, 85% 100%, 0 100%);
+        }
+
+        .header {
+            padding: 0 40px 60px 40px;
+        }
+
+        .header h1 {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4em;
+            color: rgba(255,255,255,0.4);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .nav-group {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            flex-grow: 1;
+        }
+
+        /* Machined Button Styles */
+        .machined-btn {
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 24px 40px;
+            text-decoration: none;
+            color: rgba(255,255,255,0.5);
+            font-weight: 700;
+            font-size: 1.1rem;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            transition: var(--transition);
+            overflow: hidden;
+        }
+
+        .machined-btn::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: var(--accent-active);
+            transform: scaleY(0);
+            transition: var(--transition);
+        }
+
+        .machined-btn .meta {
+            position: absolute;
+            right: 40px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            opacity: 0.3;
+            transform: translateX(10px);
+            transition: var(--transition);
+        }
+
+        .machined-btn:hover {
+            color: var(--accent-active);
+            background: var(--machined-glow);
+            padding-left: 48px;
+        }
+
+        .machined-btn:hover .meta {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .machined-btn:hover::before {
+            transform: scaleY(0.4);
+        }
+
+        /* Specific Logout Style */
+        .logout-section {
+            padding-top: 40px;
+            border-top: 1px solid var(--basalt-edge);
+            margin-top: auto;
+        }
+
+        .btn-logout {
+            color: var(--accent-danger);
+            opacity: 0.7;
+        }
+
+        .btn-logout:hover {
+            color: #fff;
+            background: var(--accent-danger);
+            padding-left: 48px;
+        }
+
+        .btn-logout:hover::before {
+            background: #fff;
+            transform: scaleY(1);
+        }
+
+        /* Dashboard Content Mockup (Negative Space) */
+        .content-area {
+            flex-grow: 1;
+            padding: 80px;
+            opacity: 0;
+            animation: reveal 1s forwards 0.5s;
+        }
+
+        @keyframes reveal {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .status-pill {
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            padding: 4px 12px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 2px;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 4rem;
+            font-weight: 900;
+            letter-spacing: -0.04em;
+            line-height: 0.9;
+            max-width: 500px;
+            text-transform: uppercase;
+        }
+
+        .machined-line {
+            height: 1px;
+            width: 100px;
+            background: var(--accent-active);
+            margin-top: 40px;
+            opacity: 0.3;
+        }
+
+        /* Entry Animation */
+        .dashboard-rail {
+            animation: slideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <nav class="dashboard-rail">
+        <div class="header">
+            <h1>Basalt / Core</h1>
+        </div>
+
+        <div class="nav-group">
+            <button class="machined-btn">
+                <span>PRODUCTS</span>
+                <span class="meta">001</span>
+            </button>
+            <button class="machined-btn">
+                <span>ORDERS</span>
+                <span class="meta">002</span>
+            </button>
+            <button class="machined-btn">
+                <span>MESSAGES</span>
+                <span class="meta">003</span>
+            </button>
+        </div>
+
+        <div class="logout-section">
+            <button class="machined-btn btn-logout">
+                <span>LOGOUT</span>
+                <span class="meta">EXIT_SES</span>
+            </button>
+        </div>
+    </nav>
+
+    <main class="content-area">
+        <div class="status-pill">SYSTEM_STABLE // 2.4.0</div>
+        <h2>UNCOMPROMISED PRECISION.</h2>
+        <div class="machined-line"></div>
+    </main>
+
+    <script>
+        // Subtle interaction feedback
+        const buttons = document.querySelectorAll('.machined-btn');
+        buttons.forEach(btn => {
+            btn.addEventListener('mousedown', () => {
+                btn.style.transform = 'scale(0.98)';
+                btn.style.transition = '0.1s';
+            });
+            btn.addEventListener('mouseup', () => {
+                btn.style.transform = 'scale(1)';
+                btn.style.transition = '0.4s';
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>

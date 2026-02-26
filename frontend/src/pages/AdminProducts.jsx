@@ -150,10 +150,11 @@ export default function AdminProducts() {
 
     return (
         <div className="admin-products-container">
+            <AdminNav />
             <div className="admin-header">
                 <div>
-                    <h2>Admin Dashboard</h2>
-                    <AdminNav />
+                    <h2>Products</h2>
+                    <div className="admin-header-sub">DDC // ADMIN PANEL</div>
                 </div>
                 <button className="add-btn" onClick={() => {
                     setShowForm(!showForm);
@@ -238,7 +239,7 @@ export default function AdminProducts() {
             )}
 
             <div className="product-list">
-                {loading ? <div style={{ padding: '2rem', textAlign: 'center', color: '#64748b' }}>Loading products...</div> : (
+                {loading ? <div style={{ padding: '3rem', textAlign: 'center', color: '#6a6a70', fontFamily: "'JetBrains Mono', monospace", fontSize: '0.85rem', letterSpacing: '0.1em' }}>LOADING...</div> : (
                     <>
                     <table>
                         <thead>
@@ -253,11 +254,11 @@ export default function AdminProducts() {
                         <tbody>
                             {filteredProducts.length === 0 ? (
                                 <tr>
-                                    <td colSpan="5" style={{ textAlign: 'center', padding: '2rem' }}>
-                                        No products found in {CATEGORY_LABELS[activeCategory]}.
+                                    <td colSpan="5" style={{ textAlign: 'center', padding: '3rem', color: '#6a6a70' }}>
+                                        No products in {CATEGORY_LABELS[activeCategory]}.
                                         <br />
                                         <button
-                                            style={{ marginTop: '10px', color: '#3b82f6', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}
+                                            style={{ marginTop: '12px', color: '#e2e2e7', background: 'transparent', border: '1px solid #2d2d30', borderRadius: '4px', cursor: 'pointer', fontFamily: "'JetBrains Mono', monospace", fontSize: '0.8rem', padding: '6px 16px', letterSpacing: '0.06em' }}
                                             onClick={() => {
                                                 setShowForm(true);
                                                 setEditingId(null);
@@ -267,7 +268,7 @@ export default function AdminProducts() {
                                                 setImageFile(null);
                                             }}
                                         >
-                                            + Add one now
+                                            + ADD ONE
                                         </button>
                                     </td>
                                 </tr>
@@ -275,10 +276,10 @@ export default function AdminProducts() {
                                 <tr key={p._id}>
                                     <td><img src={p.image} alt={p.name} className="table-img" /></td>
                                     <td>
-                                        <div style={{ fontWeight: '600' }}>{p.name}</div>
-                                        {p.featured && <span style={{ fontSize: '0.75rem', color: '#ea580c', background: '#ffedd5', padding: '2px 6px', borderRadius: '4px' }}>Featured</span>}
+                                        <div style={{ fontWeight: '700', color: '#e2e2e7' }}>{p.name}</div>
+                                        {p.featured && <span style={{ fontSize: '0.7rem', color: '#fb923c', background: 'rgba(251,146,60,0.12)', padding: '2px 8px', borderRadius: '3px', border: '1px solid rgba(251,146,60,0.25)', marginTop: '4px', display: 'inline-block' }}>Featured</span>}
                                     </td>
-                                    <td>{CATEGORY_LABELS[p.category] || p.category}</td>
+                                    <td style={{ color: '#6a6a70', fontFamily: "'JetBrains Mono', monospace", fontSize: '0.85rem' }}>{CATEGORY_LABELS[p.category] || p.category}</td>
 
                                     <td>
                                         <button className="edit-btn" onClick={() => handleEdit(p)}>Edit</button>
@@ -290,9 +291,9 @@ export default function AdminProducts() {
                     </table>
                     {totalPages > 1 && (
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', padding: '1.5rem 0' }}>
-                            <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} style={{ padding: '6px 16px', borderRadius: '6px', border: '1px solid #cbd5e1', background: currentPage === 1 ? '#f1f5f9' : 'white', cursor: currentPage === 1 ? 'not-allowed' : 'pointer', color: '#334155' }}>Prev</button>
-                            <span style={{ color: '#64748b', fontSize: '0.9rem' }}>Page {currentPage} of {totalPages} ({filteredProducts.length} total)</span>
-                            <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} style={{ padding: '6px 16px', borderRadius: '6px', border: '1px solid #cbd5e1', background: currentPage === totalPages ? '#f1f5f9' : 'white', cursor: currentPage === totalPages ? 'not-allowed' : 'pointer', color: '#334155' }}>Next</button>
+                        <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} style={{ padding: '6px 20px', borderRadius: '4px', border: '1px solid #2d2d30', background: 'transparent', cursor: currentPage === 1 ? 'not-allowed' : 'pointer', color: currentPage === 1 ? '#3a3a40' : '#e2e2e7', fontFamily: "'JetBrains Mono', monospace", fontSize: '0.8rem' }}>PREV</button>
+                            <span style={{ color: '#6a6a70', fontSize: '0.8rem', fontFamily: "'JetBrains Mono', monospace" }}>PAGE {currentPage} / {totalPages}</span>
+                            <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} style={{ padding: '6px 20px', borderRadius: '4px', border: '1px solid #2d2d30', background: 'transparent', cursor: currentPage === totalPages ? 'not-allowed' : 'pointer', color: currentPage === totalPages ? '#3a3a40' : '#e2e2e7', fontFamily: "'JetBrains Mono', monospace", fontSize: '0.8rem' }}>NEXT</button>
                         </div>
                     )}
                     </>

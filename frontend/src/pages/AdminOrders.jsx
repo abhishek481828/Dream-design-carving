@@ -58,13 +58,14 @@ export default function AdminOrders() {
 
   return (
     <div className="admin-orders-container">
+      <AdminNav />
       <div className="orders-header">
         <div>
-          <h2>Admin Dashboard</h2>
-          <AdminNav />
+          <h2>Orders</h2>
+          <div className="orders-header-sub">DDC // ADMIN PANEL</div>
         </div>
-        <div style={{ color: '#64748b', fontWeight: '500' }}>
-          {orders.length} Orders
+        <div style={{ color: '#6a6a70', fontFamily: "'JetBrains Mono', monospace", fontSize: '0.8rem', letterSpacing: '0.1em' }}>
+          {orders.length} TOTAL
         </div>
       </div>
 
@@ -117,9 +118,9 @@ export default function AdminOrders() {
           </div>
           {totalPages > 1 && (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', padding: '1.5rem 0' }}>
-              <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} style={{ padding: '6px 16px', borderRadius: '6px', border: '1px solid #cbd5e1', background: currentPage === 1 ? '#f1f5f9' : 'white', cursor: currentPage === 1 ? 'not-allowed' : 'pointer', color: '#334155' }}>Prev</button>
-              <span style={{ color: '#64748b', fontSize: '0.9rem' }}>Page {currentPage} of {totalPages} ({orders.length} total)</span>
-              <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} style={{ padding: '6px 16px', borderRadius: '6px', border: '1px solid #cbd5e1', background: currentPage === totalPages ? '#f1f5f9' : 'white', cursor: currentPage === totalPages ? 'not-allowed' : 'pointer', color: '#334155' }}>Next</button>
+              <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} style={{ padding: '6px 20px', borderRadius: '4px', border: '1px solid #2d2d30', background: 'transparent', cursor: currentPage === 1 ? 'not-allowed' : 'pointer', color: currentPage === 1 ? '#3a3a40' : '#e2e2e7', fontFamily: "'JetBrains Mono', monospace", fontSize: '0.8rem' }}>PREV</button>
+              <span style={{ color: '#6a6a70', fontSize: '0.8rem', fontFamily: "'JetBrains Mono', monospace" }}>PAGE {currentPage} / {totalPages}</span>
+              <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} style={{ padding: '6px 20px', borderRadius: '4px', border: '1px solid #2d2d30', background: 'transparent', cursor: currentPage === totalPages ? 'not-allowed' : 'pointer', color: currentPage === totalPages ? '#3a3a40' : '#e2e2e7', fontFamily: "'JetBrains Mono', monospace", fontSize: '0.8rem' }}>NEXT</button>
             </div>
           )}
           </>

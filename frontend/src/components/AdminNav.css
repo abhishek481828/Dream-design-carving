@@ -1,0 +1,179 @@
+/* ============================================
+   BASALT ADMIN SIDEBAR — Dream Design Carving
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@700;900&family=JetBrains+Mono:wght@400;500&display=swap');
+
+.adm-rail {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 280px;
+    background: #111113;
+    border-right: 1px solid #1f1f23;
+    display: flex;
+    flex-direction: column;
+    padding: 48px 0 0 0;
+    overflow: hidden;
+    z-index: 1000;
+    animation: admSlideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes admSlideIn {
+    from { transform: translateX(-100%); }
+    to   { transform: translateX(0); }
+}
+
+/* Header label */
+.adm-rail-header {
+    padding: 0 40px 56px 40px;
+}
+
+.adm-rail-subtitle {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.35em;
+    color: rgba(255, 255, 255, 0.35);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* Nav group */
+.adm-nav-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Base button / link */
+.adm-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 22px 40px;
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.35);
+    font-weight: 700;
+    font-size: 1.45rem;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    font-family: 'Inter', sans-serif;
+    width: 100%;
+    text-align: left;
+    letter-spacing: 0.01em;
+    box-sizing: border-box;
+}
+
+/* Left accent bar */
+.adm-btn::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 3px;
+    background: #ffffff;
+    transform: scaleY(0);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Meta label (right side) */
+.adm-meta {
+    margin-left: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    opacity: 0.28;
+    color: rgba(255, 255, 255, 0.6);
+    flex-shrink: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* Unread badge */
+.adm-badge {
+    margin-left: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    background: rgba(220, 60, 60, 0.75);
+    color: #fff;
+    padding: 2px 7px;
+    border-radius: 2px;
+    min-width: 22px;
+    text-align: center;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+/* Hover + active state */
+.adm-btn:hover,
+.adm-btn--active {
+    color: #ffffff;
+    background: transparent;
+}
+
+.adm-btn:hover .adm-meta,
+.adm-btn--active .adm-meta {
+    opacity: 0.6;
+}
+
+.adm-btn:hover::before,
+.adm-btn--active::before {
+    transform: scaleY(0.5);
+}
+
+.adm-btn--active::before {
+    transform: scaleY(0.7);
+}
+
+/* Press feedback */
+.adm-btn:active {
+    transform: scale(0.98);
+    transition: transform 0.1s;
+}
+
+/* Logout section */
+.adm-logout-section {
+    padding: 0;
+    border-top: 1px solid #222226;
+    flex-shrink: 0;
+    margin-bottom: 48px;
+}
+
+.adm-btn--logout {
+    color: rgba(220, 60, 60, 0.75) !important;
+    background: transparent !important;
+    border-radius: 0;
+    border: none;
+    justify-content: flex-start;
+    font-size: 1.45rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    width: 100%;
+    padding: 22px 40px;
+}
+
+.adm-btn--logout::before {
+    background: #ff3e3e;
+}
+
+.adm-btn--logout .adm-meta {
+    display: block;
+    opacity: 0.28;
+    color: rgba(220, 60, 60, 0.5);
+}
+
+.adm-btn--logout:hover {
+    color: #ff4444 !important;
+    background: transparent !important;
+    padding-left: 40px;
+}
+
+.adm-btn--logout:hover::before {
+    transform: scaleY(0.5);
+    background: #ff3e3e;
+}

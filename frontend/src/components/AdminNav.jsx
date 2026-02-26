@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import API_BASE_URL from "../config";
+import "./AdminNav.css";
 
 const AdminNav = () => {
     const location = useLocation();
@@ -26,68 +27,46 @@ const AdminNav = () => {
                 console.error("Failed to fetch unread counts", error);
             }
         };
-
         fetchCounts();
-        // Poll every 30 seconds
         const interval = setInterval(fetchCounts, 30000);
         return () => clearInterval(interval);
     }, [token]);
 
-    const navItemStyle = {
-        marginRight: '15px',
-        textDecoration: 'none',
-        color: '#64748b',
-        fontWeight: '500',
-        padding: '5px 10px',
-        borderRadius: '5px',
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '5px'
-    };
-
-    const activeStyle = {
-        ...navItemStyle,
-        background: '#3b82f6',
-        color: 'white'
-    };
-
-    const badgeStyle = {
-        background: '#ef4444',
-        color: 'white',
-        fontSize: '0.75rem',
-        padding: '2px 6px',
-        borderRadius: '10px',
-        minWidth: '18px',
-        textAlign: 'center'
-    };
+    const navItems = [
+        { to: "/admin/products", label: "PRODUCTS", meta: "001", badge: 0 },
+        { to: "/admin/orders",   label: "ORDERS",   meta: "002", badge: counts.unreadOrders },
+        { to: "/admin/messages", label: "MESSAGES", meta: "003", badge: counts.unreadMessages },
+    ];
 
     return (
-        <div className="admin-nav" style={{ marginTop: '10px', display: 'flex', alignItems: 'center' }}>
-            <Link
-                to="/admin/products"
-                style={location.pathname === "/admin/products" ? activeStyle : navItemStyle}
-            >
-                Products
-            </Link>
-            <Link
-                to="/admin/orders"
-                style={location.pathname === "/admin/orders" ? activeStyle : navItemStyle}
-            >
-                Orders {counts.unreadOrders > 0 && <span style={badgeStyle}>{counts.unreadOrders}</span>}
-            </Link>
-            <Link
-                to="/admin/messages"
-                style={location.pathname === "/admin/messages" ? activeStyle : navItemStyle}
-            >
-                Messages {counts.unreadMessages > 0 && <span style={badgeStyle}>{counts.unreadMessages}</span>}
-            </Link>
-            <button
-                onClick={handleLogout}
-                style={{ marginLeft: '10px', padding: '5px 14px', borderRadius: '5px', border: '1px solid #ef4444', background: 'transparent', color: '#ef4444', fontWeight: '500', cursor: 'pointer', fontSize: '0.9rem' }}
-            >
-                Logout
-            </button>
-        </div>
+        <nav className="adm-rail">
+            <div className="adm-rail-header">
+                <span className="adm-rail-subtitle">DDC // ADMIN</span>
+            </div>
+
+            <div className="adm-nav-group">
+                {navItems.map(item => (
+                    <Link
+                        key={item.to}
+                        to={item.to}
+                        className={`adm-btn${location.pathname === item.to ? " adm-btn--active" : ""}`}
+                    >
+                        <span className="adm-btn-label">{item.label}</span>
+                        {item.badge > 0
+                            ? <span className="adm-badge">{item.badge}</span>
+                            : <span className="adm-meta">{item.meta}</span>
+                        }
+                    </Link>
+                ))}
+            </div>
+
+            <div className="adm-logout-section">
+                <button className="adm-btn adm-btn--logout" onClick={handleLogout}>
+                    <span className="adm-btn-label">LOGOUT</span>
+                    <span className="adm-meta">EXIT_SES</span>
+                </button>
+            </div>
+        </nav>
     );
 };
 

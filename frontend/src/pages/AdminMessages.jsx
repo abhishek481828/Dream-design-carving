@@ -56,88 +56,96 @@ export default function AdminMessages() {
 
     return (
         <div className="admin-products-container">
+            <AdminNav />
             <div className="admin-header">
                 <div>
-                    <h2>Admin Dashboard</h2>
-                    <AdminNav />
+                    <h2>Messages</h2>
+                    <div className="admin-header-sub">DDC // ADMIN PANEL</div>
                 </div>
             </div>
 
             <div className="product-list" style={{ padding: '2rem' }}>
-                <h3 style={{ marginBottom: '1.5rem', color: '#334155' }}>Customer Inquiries</h3>
+                <h3 style={{ marginBottom: '1.5rem', color: '#e2e2e7', fontFamily: "'JetBrains Mono', monospace", letterSpacing: '0.08em', fontSize: '0.85rem', textTransform: 'uppercase' }}>Customer Inquiries</h3>
 
-                {loading && <div style={{ textAlign: 'center', color: '#64748b' }}>Loading messages...</div>}
+                {loading && <div style={{ textAlign: 'center', color: '#6a6a70' }}>Loading messages...</div>}
 
-                {error && <div style={{ color: '#ef4444', textAlign: 'center' }}>{error}</div>}
+                {error && <div style={{ color: '#ff3e3e', textAlign: 'center' }}>{error}</div>}
 
                 {!loading && !error && messages.length === 0 && (
-                    <div style={{ textAlign: 'center', color: '#64748b', padding: '2rem' }}>
+                    <div style={{ textAlign: 'center', color: '#6a6a70', padding: '2rem' }}>
                         No messages received yet.
                     </div>
                 )}
 
-                <div style={{ display: "grid", gap: "1.5rem" }}>
+                <div style={{ display: "grid", gap: "1px", border: '1px solid #1a1a1e', background: '#1a1a1e' }}>
                     {pagedMessages.map(msg => (
                         <div key={msg._id} style={{
-                            background: msg.isSeen ? "#f8fafc" : "#eff6ff",
-                            padding: "1.5rem",
-                            borderRadius: "12px",
-                            border: msg.isSeen ? "1px solid #e2e8f0" : "2px solid #3b82f6",
-                            transition: "all 0.2s",
-                            position: 'relative'
+                            background: '#0e0e10',
+                            padding: "1.5rem 1.75rem",
+                            border: 'none',
+                            transition: "background 0.15s"
                         }}>
-                            {!msg.isSeen && (
-                                <div style={{
-                                    position: 'absolute',
-                                    top: '10px',
-                                    right: '10px',
-                                    background: '#3b82f6',
-                                    color: 'white',
-                                    padding: '2px 8px',
-                                    borderRadius: '10px',
-                                    fontSize: '0.7rem',
-                                    fontWeight: 'bold'
-                                }}>New</div>
-                            )}
-                            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "1rem", flexWrap: "wrap", gap: "1rem" }}>
+                            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "1rem", flexWrap: "wrap", gap: "1rem", alignItems: 'flex-start' }}>
                                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                                     <div style={{
-                                        width: '40px', height: '40px',
-                                        background: '#bfdbfe', color: '#1d4ed8',
+                                        width: '36px', height: '36px',
+                                        background: '#1a1a1e', color: '#6a6a70',
                                         borderRadius: '50%', display: 'flex',
                                         alignItems: 'center', justifyContent: 'center',
-                                        fontWeight: 'bold', fontSize: '1.2rem'
+                                        fontWeight: 'bold', fontSize: '1rem',
+                                        border: '1px solid #2d2d30',
+                                        fontFamily: "'JetBrains Mono', monospace"
                                     }}>
                                         {msg.name.charAt(0).toUpperCase()}
                                     </div>
                                     <div>
-                                        <h4 style={{ margin: 0, color: "#0f172a" }}>{msg.name}</h4>
-                                        <a href={`mailto:${msg.email}`} style={{ color: "#3b82f6", textDecoration: 'none', fontSize: '0.9rem' }}>
+                                        <h4 style={{ margin: 0, color: '#e2e2e7', fontWeight: 700, fontSize: '0.95rem' }}>{msg.name}</h4>
+                                        <a href={`mailto:${msg.email}`} style={{ color: '#6a6a70', textDecoration: 'none', fontSize: '0.82rem', fontFamily: "'JetBrains Mono', monospace" }}>
                                             {msg.email}
                                         </a>
                                     </div>
                                 </div>
-                                <span style={{ color: "#64748b", fontSize: "0.85rem", background: "white", padding: "4px 12px", borderRadius: "20px", border: "1px solid #cbd5e1" }}>
-                                    {new Date(msg.createdAt).toLocaleString()}
-                                </span>
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '6px' }}>
+                                    {!msg.isSeen && (
+                                        <span style={{
+                                            color: '#ffffff',
+                                            background: 'rgba(220, 60, 60, 0.75)',
+                                            fontSize: '0.62rem',
+                                            fontWeight: '700',
+                                            letterSpacing: '0.12em',
+                                            textTransform: 'uppercase',
+                                            fontFamily: "'JetBrains Mono', monospace",
+                                            padding: '2px 7px',
+                                            borderRadius: '2px'
+                                        }}>NEW</span>
+                                    )}
+                                    <span style={{ color: '#3a3a45', fontSize: '0.75rem', fontFamily: "'JetBrains Mono', monospace" }}>
+                                        {new Date(msg.createdAt).toLocaleString()}
+                                    </span>
+                                </div>
                             </div>
-                            <div style={{ background: "white", padding: "1rem", borderRadius: "8px", border: "1px solid #e2e8f0", color: "#334155", lineHeight: "1.6", marginBottom: '1rem' }}>
+                            <div style={{ background: '#080809', padding: '1rem 1.25rem', border: '1px solid #18181c', color: '#c4c4cc', lineHeight: '1.7', marginBottom: '1rem', fontSize: '0.92rem' }}>
                                 {msg.message}
                             </div>
                             {!msg.isSeen && (
                                 <button
                                     onClick={() => markAsSeen(msg._id)}
                                     style={{
-                                        background: '#3b82f6',
-                                        color: 'white',
-                                        border: 'none',
-                                        padding: '5px 15px',
-                                        borderRadius: '5px',
+                                        background: 'transparent',
+                                        color: '#c4c4cc',
+                                        border: '1px solid #3a3a45',
+                                        padding: '5px 16px',
+                                        borderRadius: '4px',
                                         cursor: 'pointer',
                                         display: 'flex',
                                         alignItems: 'center',
-                                        gap: '5px',
-                                        fontSize: '0.9rem'
+                                        gap: '6px',
+                                        fontSize: '0.75rem',
+                                        fontWeight: 700,
+                                        fontFamily: "'JetBrains Mono', monospace",
+                                        letterSpacing: '0.06em',
+                                        textTransform: 'uppercase',
+                                        transition: 'all 0.2s'
                                     }}
                                 >
                                     <FaCheckCircle /> Mark as Seen
@@ -148,9 +156,9 @@ export default function AdminMessages() {
                 </div>
                 {totalPages > 1 && (
                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', padding: '1.5rem 0' }}>
-                        <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} style={{ padding: '6px 16px', borderRadius: '6px', border: '1px solid #cbd5e1', background: currentPage === 1 ? '#f1f5f9' : 'white', cursor: currentPage === 1 ? 'not-allowed' : 'pointer', color: '#334155' }}>Prev</button>
-                        <span style={{ color: '#64748b', fontSize: '0.9rem' }}>Page {currentPage} of {totalPages} ({messages.length} total)</span>
-                        <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} style={{ padding: '6px 16px', borderRadius: '6px', border: '1px solid #cbd5e1', background: currentPage === totalPages ? '#f1f5f9' : 'white', cursor: currentPage === totalPages ? 'not-allowed' : 'pointer', color: '#334155' }}>Next</button>
+                        <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} style={{ padding: '6px 16px', borderRadius: '6px', border: '1px solid #2d2d30', background: '#121214', cursor: currentPage === 1 ? 'not-allowed' : 'pointer', color: currentPage === 1 ? '#6a6a70' : '#e2e2e7', opacity: currentPage === 1 ? 0.5 : 1 }}>Prev</button>
+                        <span style={{ color: '#6a6a70', fontSize: '0.85rem' }}>Page {currentPage} of {totalPages} &mdash; {messages.length} total</span>
+                        <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} style={{ padding: '6px 16px', borderRadius: '6px', border: '1px solid #2d2d30', background: '#121214', cursor: currentPage === totalPages ? 'not-allowed' : 'pointer', color: currentPage === totalPages ? '#6a6a70' : '#e2e2e7', opacity: currentPage === totalPages ? 0.5 : 1 }}>Next</button>
                     </div>
                 )}
             </div>
