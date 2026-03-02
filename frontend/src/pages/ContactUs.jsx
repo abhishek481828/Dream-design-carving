@@ -2,15 +2,17 @@ import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { toast } from 'react-toastify';
 import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaClock } from 'react-icons/fa';
-import './ContactUs.css';
 import { sendContactMessage } from '../services/api';
+import './ContactUs.css';
+
+const EMPTY_FORM = { name: '', email: '', phone: '', message: '' };
 
 export default function ContactUs() {
-  const [form, setForm] = useState({ name: '', email: '', phone: '', message: '' });
+  const [form, setForm] = useState(EMPTY_FORM);
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setForm(f => ({ ...f, [e.target.name]: e.target.value }));
   };
 
   const handleSubmit = async (e) => {
@@ -20,7 +22,7 @@ export default function ContactUs() {
       const res = await sendContactMessage(form);
       if (res.success) {
         toast.success('Message sent! We will get back to you soon.');
-        setForm({ name: '', email: '', phone: '', message: '' });
+        setForm(EMPTY_FORM);
       } else {
         toast.error(res.error || 'Failed to send message.');
       }
@@ -39,82 +41,100 @@ export default function ContactUs() {
         <meta property="og:description" content="Get in touch for custom wood carving orders, consultations and quotes." />
         <link rel="canonical" href="https://dream-design-carving-bnmp.vercel.app/contact" />
       </Helmet>
+
       <div className="contact-container">
+
+        {/* ── Header ── */}
         <div className="contact-header">
-          <h1 className="contact-title">Get in Touch</h1>
+          <span className="contact-tag">Get In Touch</span>
+          <h1 className="contact-title">Let's start<br /><span>a conversation</span></h1>
           <p className="contact-subtitle">
-            Have a vision for a custom carving? We're here to bring it to life. Reach out to us for consultations, quotes, or just to say hello ☺️😊.
+            Have a vision for a custom carving? We're here to bring it to life.
+            Reach out to us for consultations, quotes, or just to say hello.
           </p>
         </div>
 
         <div className="contact-content">
-          {/* Left Side: Contact Info */}
-          <div className="contact-info-card">
-            <div className="info-item">
+
+          {/* ── Left Side: Contact Info ── */}
+          <div className="contact-info-grid">
+
+            <div className="contact-info-card">
               <div className="info-icon-box"><FaPhoneAlt /></div>
               <div className="info-content">
                 <h3>Call Us</h3>
-                <p><a href="tel:+9779840028822" style={{ fontSize: '1rem', fontWeight: 'bold', textDecoration: 'underline', color: '#60a5fa' }}>+977 9840028822</a></p>
-
+                <p>
+                  <a href="tel:+9779840028822" className="info-highlight">+977 9840028822</a>
+                </p>
               </div>
             </div>
 
-            <div className="info-item">
+            <div className="contact-info-card">
               <div className="info-icon-box"><FaEnvelope /></div>
               <div className="info-content">
                 <h3>Email Us</h3>
-                <p><a href="mailto:vijaykant9988@gmail.com" style={{ fontSize: '1rem', fontWeight: 'bold', textDecoration: 'underline', color: '#60a5fa' }}>vijaykant9988@gmail.com</a></p>
-                <p>We'll respond within 24 hours.</p>
+                <p>
+                  <a href="mailto:vijaykant9988@gmail.com" className="info-highlight">vijaykant9988@gmail.com</a>
+                </p>
+                <p style={{ marginTop: '0.25rem' }}>We'll respond within 24 hours.</p>
               </div>
             </div>
 
-            <div className="info-item">
+            <div className="contact-info-card">
               <div className="info-icon-box"><FaMapMarkerAlt /></div>
               <div className="info-content">
                 <h3>Visit Studio</h3>
-                <p style={{ fontSize: '1rem', fontWeight: 'bold', textDecoration: 'underline', color: '#60a5fa' }}>Mahalaxmi-Tikathaki, Lalitpur<br />Nepal</p>
+                <p className="info-highlight">Mahalaxmi-Tikathaki, Lalitpur</p>
+                <p>Nepal</p>
               </div>
             </div>
 
-            <div className="info-item">
+            <div className="contact-info-card">
               <div className="info-icon-box"><FaClock /></div>
               <div className="info-content">
                 <h3>Opening Hours</h3>
-                <p style={{ color: '#4ade80', fontWeight: 'bold' }}>Always Open, 24/7 hours</p>
+                <p className="info-success">Always Open, 24/7</p>
               </div>
             </div>
+
           </div>
 
-          {/* Right Side: Form */}
-          <div className="contact-form-card">
+          {/* ── Right Side: Form ── */}
+          <div className="contact-form-wrapper">
             <form onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label>Full Name</label>
-                <input
-                  name="name"
-                  className="form-input"
-                  placeholder="John Doe"
-                  value={form.name}
-                  onChange={handleChange}
-                  required
-                />
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="name">Full Name</label>
+                  <input
+                    id="name"
+                    name="name"
+                    type="text"
+                    className="form-input"
+                    placeholder="e.g. John Doe"
+                    value={form.name}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="phone">Phone Number</label>
+                  <input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    className="form-input"
+                    placeholder="+977 98XXXXXXXX"
+                    value={form.phone}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
               </div>
 
               <div className="form-group">
-                <label>Phone Number</label>
+                <label htmlFor="email">Email Address</label>
                 <input
-                  name="phone"
-                  className="form-input"
-                  placeholder="+977 98XXXXXXXX (Required)"
-                  value={form.phone}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Email Address</label>
-                <input
+                  id="email"
                   name="email"
                   type="email"
                   className="form-input"
@@ -125,12 +145,12 @@ export default function ContactUs() {
               </div>
 
               <div className="form-group">
-                <label>Your Message</label>
+                <label htmlFor="message">Your Message</label>
                 <textarea
+                  id="message"
                   name="message"
                   className="form-textarea"
                   placeholder="Tell us about your project..."
-                  rows={5}
                   value={form.message}
                   onChange={handleChange}
                   required
@@ -142,21 +162,20 @@ export default function ContactUs() {
               </button>
             </form>
           </div>
+
         </div>
 
-        {/* Map Section Placeholder */}
+        {/* ── Map Section ── */}
         <div className="map-section">
           <iframe
             title="Dream Design Location"
             src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d2986.6821501152594!2d85.35437404739423!3d27.652947910001792!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb11526b509367%3A0x532598e0c615ae69!2sDream%20Design%20Carving!5e1!3m2!1sen!2snp!4v1768920469145!5m2!1sen!2snp"
-            width="100%"
-            height="100%"
-            style={{ border: 0 }}
             allowFullScreen=""
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
-          ></iframe>
+          />
         </div>
+
       </div>
     </div>
   );

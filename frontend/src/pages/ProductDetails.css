@@ -1,0 +1,457 @@
+/* ════════════════════════════════════════════
+   PRODUCT DETAILS PAGE  –  dark grain aesthetic
+   ════════════════════════════════════════════ */
+
+.pd-page {
+    min-height: 100vh;
+    background-color: #08080a;
+    background-image: linear-gradient(to bottom, #0d0d11 0%, #08080a 100%);
+    color: #ced4da;
+    font-family: 'DM Sans', 'Inter', sans-serif;
+    padding: 6rem 4rem 8rem;
+    position: relative;
+}
+
+.pd-page::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ── Back Button ── */
+.pd-back {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #6b7280;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin-bottom: 2.5rem;
+    transition: color 0.2s;
+    font-family: inherit;
+    max-width: 1280px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.pd-back:hover {
+    color: #3a86ff;
+}
+
+/* ── Content Wrapper ── */
+.pd-wrap {
+    max-width: 1280px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+/* ── Header ── */
+.pd-header {
+    margin-bottom: 3rem;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.pd-tag {
+    display: inline-block;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.5em;
+    color: #3a86ff;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    opacity: 0.85;
+    border: 1px solid rgba(58, 134, 255, 0.25);
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+}
+
+.pd-title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+    margin: 0 0 1rem 0;
+}
+
+.pd-desc {
+    font-size: 0.93rem;
+    color: #6b7280;
+    line-height: 1.8;
+    max-width: 65ch;
+    margin: 0;
+}
+
+/* ── Image Grid ── */
+.pd-images {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 4rem;
+}
+
+.pd-img-tile {
+    position: relative;
+    overflow: hidden;
+    background: #0c0c10;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    cursor: pointer;
+    aspect-ratio: 4/3;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.pd-img-tile:hover {
+    border-color: rgba(58, 134, 255, 0.25);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(58, 134, 255, 0.1);
+    transform: translateY(-3px);
+}
+
+.pd-img-tile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), filter 0.4s ease;
+    filter: brightness(0.88);
+    border-radius: 12px;
+}
+
+.pd-img-tile:hover img {
+    transform: scale(1.07);
+    filter: brightness(1);
+}
+
+/* zoom icon overlay */
+.pd-img-tile::after {
+    content: '⊕';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: rgba(255, 255, 255, 0.7);
+    opacity: 0;
+    background: rgba(8, 8, 12, 0.3);
+    transition: opacity 0.3s ease;
+    border-radius: 12px;
+}
+
+.pd-img-tile:hover::after {
+    opacity: 1;
+}
+
+/* ── Single image fallback ── */
+.pd-hero-img {
+    width: 100%;
+    max-height: 520px;
+    object-fit: cover;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    display: block;
+    margin-bottom: 3rem;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    filter: brightness(0.9);
+}
+
+.pd-hero-img:hover {
+    transform: scale(1.01);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    filter: brightness(1);
+}
+
+/* ── WhatsApp CTA ── */
+.pd-cta {
+    background: #111115;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-top: 2px solid rgba(58, 134, 255, 0.4);
+    border-radius: 14px;
+    padding: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.pd-cta-text h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 0.5rem 0;
+}
+
+.pd-cta-text p {
+    font-size: 0.87rem;
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.6;
+}
+
+.pd-cta-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+}
+
+.pd-buy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: #0f2a6e;
+    color: #ffffff;
+    border: 1px solid rgba(58, 134, 255, 0.2);
+    padding: 1rem 2rem;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    white-space: nowrap;
+}
+
+.pd-buy-btn:hover {
+    background: #1a3fa3;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(15, 42, 110, 0.5);
+}
+
+.pd-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: #0d5c2e;
+    color: #ffffff;
+    text-decoration: none;
+    padding: 1rem 2rem;
+    border-radius: 10px;
+    border: 1px solid rgba(37, 211, 102, 0.2);
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.06em;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    white-space: nowrap;
+}
+
+.pd-cta-btn:hover {
+    background: #156e38;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(13, 92, 46, 0.5);
+}
+
+/* ── Loading ── */
+.pd-loading {
+    text-align: center;
+    padding: 6rem 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+.pd-loading-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.pd-loading-dot {
+    width: 8px;
+    height: 8px;
+    background: #3a86ff;
+    border-radius: 50%;
+    animation: dotBounce 1.2s ease-in-out infinite;
+}
+
+.pd-loading-dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.pd-loading-dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes dotBounce {
+
+    0%,
+    80%,
+    100% {
+        transform: scale(0.6);
+        opacity: 0.4;
+    }
+
+    40% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.pd-loading-text {
+    font-size: 0.78rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: #374151;
+}
+
+/* ════════════════════════════════════════════
+   LIGHTBOX (fullscreen viewer)
+   ════════════════════════════════════════════ */
+
+.pd-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    background: rgba(0, 0, 0, 0.96);
+    backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    animation: lbFadeIn 0.25s ease;
+}
+
+@keyframes lbFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.pd-lightbox-inner {
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    animation: lbSlideUp 0.3s ease;
+}
+
+@keyframes lbSlideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.pd-lightbox-img {
+    max-width: 85vw;
+    max-height: 72vh;
+    object-fit: contain;
+    border-radius: 12px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
+    display: block;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.pd-lightbox-info {
+    text-align: center;
+    max-width: 600px;
+}
+
+.pd-lightbox-info h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 0.5rem 0;
+    letter-spacing: -0.02em;
+}
+
+.pd-lightbox-info p {
+    font-size: 0.9rem;
+    color: #6b7280;
+    line-height: 1.7;
+    margin: 0;
+}
+
+.pd-lightbox-close {
+    position: fixed;
+    top: 1.5rem;
+    right: 1.5rem;
+    z-index: 3100;
+    width: 44px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    color: #ffffff;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, transform 0.2s;
+}
+
+.pd-lightbox-close:hover {
+    background: rgba(58, 134, 255, 0.15);
+    border-color: rgba(58, 134, 255, 0.4);
+    transform: rotate(90deg);
+}
+
+.pd-lightbox-hint {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: #374151;
+    pointer-events: none;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+    .pd-page {
+        padding: 6rem 2rem 6rem;
+    }
+
+    .pd-images {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .pd-cta {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 560px) {
+    .pd-page {
+        padding: 6rem 1.25rem 4rem;
+    }
+
+    .pd-images {
+        grid-template-columns: 1fr;
+    }
+}

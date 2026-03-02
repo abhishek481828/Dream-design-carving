@@ -1,32 +1,88 @@
-/* Order Us Page - Premium Redesign */
+/* ════════════════════════════════════════════
+   ORDER PAGE  –  matches dark grain home page
+   ════════════════════════════════════════════ */
+
 .orderus-page {
   min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4rem 1rem;
-  /* Global background is already set on body */
+  background-color: #08080a;
+  background-image: linear-gradient(to bottom, #0d0d11 0%, #08080a 100%);
+  color: #ced4da;
+  font-family: 'DM Sans', 'Inter', sans-serif;
+  padding: 9rem 2.5rem 6rem;
+  position: relative;
 }
 
-/* Glassmorphism Card */
+.orderus-page::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Page Header ── */
+.orderus-header {
+  max-width: 860px;
+  margin: 0 auto 4rem;
+  position: relative;
+  z-index: 1;
+}
+
+.orderus-tag {
+  display: inline-block;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.5em;
+  color: #3a86ff;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  opacity: 0.85;
+}
+
+.orderus-title {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin: 0 0 1.25rem 0;
+  background: none;
+  -webkit-text-fill-color: unset;
+  -webkit-background-clip: unset;
+}
+
+.orderus-desc {
+  font-size: 0.95rem;
+  color: #6b7280;
+  line-height: 1.75;
+  max-width: 55ch;
+  margin: 0;
+  text-align: left;
+}
+
+/* ── Form Card ── */
 .orderus-form {
-  background: rgba(30, 41, 59, 0.7);
-  /* translucent dark blue */
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 24px;
-  padding: 3rem;
-  width: 100%;
-  max-width: 600px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-  animation: slideUpFade 0.8s ease-out;
+  max-width: 860px;
+  margin: 0 auto;
+  background: #111115;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 2px solid rgba(58, 134, 255, 0.5);
+  padding: 3.5rem;
+  position: relative;
+  z-index: 1;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-radius: 0;
+  box-shadow: 20px 20px 60px #040405, -20px -20px 60px #1a1a20;
+  animation: slideUpFade 0.6s ease-out;
 }
 
 @keyframes slideUpFade {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(24px);
   }
 
   to {
@@ -35,39 +91,40 @@
   }
 }
 
-/* Typography */
-.orderus-title {
-  text-align: center;
-  font-size: 2.2rem;
-  font-weight: 800;
-  margin-bottom: 0.5rem;
-  background: linear-gradient(135deg, #fbbf24, #f59e0b);
-  /* Gold Gradient */
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  letter-spacing: -0.5px;
+/* ── Section divider inside form ── */
+.orderus-section-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.45em;
+  color: #3a86ff;
+  text-transform: uppercase;
+  opacity: 0.7;
+  margin: 0 0 1.5rem 0;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.orderus-desc {
-  text-align: center;
-  color: #94a3b8;
-  font-size: 1.1rem;
-  margin-bottom: 2.5rem;
-  line-height: 1.6;
-}
-
-/* Form Groups */
+/* ── Field Grid ── */
 .orderus-fields {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
+.orderus-fields-single {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ── Individual field group ── */
 .orderus-group {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
+  gap: 0.55rem;
+  margin-bottom: 0;
 }
 
 .orderus-group.full-width {
@@ -77,110 +134,164 @@
 .orderus-group label {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  color: #e2e8f0;
+  gap: 0.55rem;
+  color: #94a3b8;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .orderus-group label svg {
-  color: #f59e0b;
-  /* Icon color */
+  color: #3a86ff;
+  font-size: 0.9rem;
 }
 
-/* Inputs */
+/* ── Inputs, Select, Textarea ── */
 .orderus-group input,
 .orderus-group select,
 .orderus-group textarea {
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 1rem;
-  color: white;
-  font-size: 1rem;
+  background: #0c0c10;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0;
+  padding: 0.95rem 1.1rem;
+  color: #e2e8f0;
+  font-size: 0.92rem;
   font-family: inherit;
-  transition: all 0.3s ease;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .orderus-group input:focus,
 .orderus-group select:focus,
 .orderus-group textarea:focus {
   outline: none;
-  border-color: #f59e0b;
-  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.1);
-  background: rgba(15, 23, 42, 0.8);
+  border-color: #3a86ff;
+  box-shadow: 0 0 0 3px rgba(58, 134, 255, 0.12);
+  background: #0e0e14;
 }
 
 .orderus-group input::placeholder,
 .orderus-group textarea::placeholder {
-  color: #475569;
+  color: #374151;
+  font-size: 0.88rem;
 }
 
-/* File Upload Specifics */
-.orderus-group input[type="file"] {
-  padding: 0.75rem;
+.orderus-group select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%233a86ff' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1.1rem center;
+  padding-right: 2.5rem;
   cursor: pointer;
+}
+
+.orderus-group select option {
+  background: #111115;
+  color: #e2e8f0;
+}
+
+.orderus-group textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+/* ── File Upload ── */
+.orderus-group input[type="file"] {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  color: #6b7280;
 }
 
 .orderus-group input[type="file"]::-webkit-file-upload-button {
-  background: #334155;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
+  background: #1e1e26;
+  color: #ced4da;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.45rem 1rem;
   margin-right: 1rem;
   cursor: pointer;
-  transition: background 0.2s;
+  font-size: 0.8rem;
+  font-family: inherit;
+  letter-spacing: 0.05em;
+  transition: background 0.2s, border-color 0.2s;
 }
 
 .orderus-group input[type="file"]::-webkit-file-upload-button:hover {
-  background: #475569;
+  background: #252530;
+  border-color: rgba(58, 134, 255, 0.3);
 }
 
-.orderus-note {
-  font-size: 0.85rem;
-  color: #64748b;
-  margin-top: 0.25rem;
+/* ── Prefill image badge (auto-filled from Buy Now) ── */
+.orderus-prefill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #34d399;
+  margin-top: 0.4rem;
+  background: rgba(52, 211, 153, 0.07);
+  border: 1px solid rgba(52, 211, 153, 0.2);
+  padding: 0.3rem 0.75rem;
+  border-radius: 4px;
 }
 
-/* Submit Button */
+/* ── Divider ── */
+.orderus-divider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.07), transparent);
+  margin: 2rem 0;
+}
+
+/* ── Submit Button ── */
 .orderus-submit {
   width: 100%;
-  padding: 1rem;
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-  color: white;
+  padding: 1.2rem 2rem;
+  background: #2563eb;
+  color: #ffffff;
   border: none;
-  border-radius: 12px;
-  font-size: 1.1rem;
+  border-radius: 0;
+  font-size: 0.88rem;
   font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
-  box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
+  font-family: inherit;
+  margin-top: 2rem;
 }
 
-.orderus-submit:hover {
+.orderus-submit:hover:not(:disabled) {
+  background: #3b82f6;
   transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.4);
+  box-shadow: 0 8px 30px rgba(37, 99, 235, 0.35);
 }
 
-/* Success Message */
+.orderus-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Success Banner ── */
 .orderus-success {
   margin-top: 1.5rem;
-  padding: 1rem;
-  background: rgba(16, 185, 129, 0.1);
-  border: 1px solid rgba(16, 185, 129, 0.2);
-  border-radius: 12px;
+  padding: 1.1rem 1.5rem;
+  background: rgba(16, 185, 129, 0.07);
+  border: 1px solid rgba(16, 185, 129, 0.25);
   color: #34d399;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
   font-weight: 600;
-  animation: fadeIn 0.5s ease-out;
+  font-size: 0.9rem;
+  animation: fadeIn 0.4s ease-out;
 }
 
 @keyframes fadeIn {
@@ -193,18 +304,56 @@
   }
 }
 
-/* Responsive */
-@media (max-width: 768px) {
+/* ── Info Strip ── */
+.orderus-info-strip {
+  max-width: 860px;
+  margin: 2.5rem auto 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: rgba(255, 255, 255, 0.05);
+  position: relative;
+  z-index: 1;
+}
+
+.orderus-info-item {
+  background: #0e0e12;
+  padding: 1.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.orderus-info-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.4em;
+  color: #3a86ff;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.orderus-info-value {
+  font-size: 0.88rem;
+  color: #e2e8f0;
+  font-weight: 500;
+}
+
+/* ── Responsive ── */
+@media (max-width: 700px) {
+  .orderus-page {
+    padding: 8rem 1.25rem 4rem;
+  }
+
   .orderus-form {
     padding: 2rem 1.5rem;
   }
 
   .orderus-fields {
     grid-template-columns: 1fr;
-    gap: 0;
   }
 
-  .orderus-title {
-    font-size: 1.75rem;
+  .orderus-info-strip {
+    grid-template-columns: 1fr;
   }
 }

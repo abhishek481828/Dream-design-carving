@@ -1,0 +1,434 @@
+/* ════════════════════════════════════════════
+   CATEGORY PRODUCTS PAGE  –  dark grain aesthetic
+   ════════════════════════════════════════════ */
+
+.catprod-page {
+    min-height: 100vh;
+    background-color: #08080a;
+    background-image: linear-gradient(to bottom, #0d0d11 0%, #08080a 100%);
+    color: #ced4da;
+    font-family: 'DM Sans', 'Inter', sans-serif;
+    padding: 5rem 4rem 8rem;
+    position: relative;
+}
+
+.catprod-page::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ── Back Button ── */
+.catprod-back {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #6b7280;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin-bottom: 2.5rem;
+    transition: color 0.2s;
+    font-family: inherit;
+}
+
+.catprod-back:hover {
+    color: #3a86ff;
+}
+
+/* ── Page Header ── */
+.catprod-header {
+    max-width: 1280px;
+    margin: 0 auto 3.5rem;
+    position: relative;
+    z-index: 1;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.catprod-tag {
+    display: inline-block;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.5em;
+    color: #3a86ff;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    opacity: 0.85;
+    border: 1px solid rgba(58, 134, 255, 0.25);
+    padding: 0.3rem 0.8rem;
+}
+
+.catprod-title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+    margin: 0 0 1rem 0;
+}
+
+.catprod-desc {
+    font-size: 0.93rem;
+    color: #6b7280;
+    line-height: 1.75;
+    max-width: 55ch;
+    margin: 0;
+}
+
+/* ── Controls Bar ── */
+.catprod-controls {
+    max-width: 1280px;
+    margin: 0 auto 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 1;
+}
+
+.catprod-count {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #374151;
+}
+
+.catprod-count span {
+    color: #3a86ff;
+}
+
+.catprod-sort {
+    appearance: none;
+    -webkit-appearance: none;
+    background: #111115;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    color: #ced4da;
+    padding: 0.7rem 2.5rem 0.7rem 1.1rem;
+    font-size: 0.82rem;
+    font-family: inherit;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%233a86ff' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.9rem center;
+    transition: border-color 0.2s;
+}
+
+.catprod-sort:focus {
+    outline: none;
+    border-color: #3a86ff;
+}
+
+.catprod-sort option {
+    background: #111115;
+}
+
+/* ── Product Grid ── */
+.catprod-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    max-width: 1280px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+/* ── Product Card ── */
+.catprod-card {
+    background: #111115;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 14px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+    overflow: hidden;
+}
+
+.catprod-card:hover {
+    border-color: rgba(58, 134, 255, 0.2);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(58, 134, 255, 0.08);
+    transform: translateY(-4px);
+}
+
+/* blue top accent on hover */
+.catprod-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(to right, #3a86ff, #60a5fa);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    z-index: 3;
+}
+
+.catprod-card:hover::before {
+    transform: scaleX(1);
+}
+
+/* featured badge */
+.catprod-featured-badge {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    z-index: 2;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #3a86ff;
+    background: rgba(8, 8, 12, 0.85);
+    border: 1px solid rgba(58, 134, 255, 0.4);
+    border-radius: 6px;
+    padding: 0.3rem 0.65rem;
+    backdrop-filter: blur(4px);
+}
+
+/* card image */
+.catprod-card-img-wrap {
+    position: relative;
+    width: 100%;
+    height: 240px;
+    overflow: hidden;
+    background: #0c0c10;
+    border-radius: 14px 14px 0 0;
+}
+
+.catprod-card-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), filter 0.4s ease;
+    filter: brightness(0.85);
+}
+
+.catprod-card:hover .catprod-card-img-wrap img {
+    transform: scale(1.07);
+    filter: brightness(1);
+}
+
+.catprod-card-img-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(8, 8, 12, 0.7) 0%, transparent 55%);
+    pointer-events: none;
+}
+
+/* card body */
+.catprod-card-body {
+    padding: 1.75rem 2rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    flex: 1;
+}
+
+.catprod-card-name {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+}
+
+.catprod-card-desc {
+    font-size: 0.84rem;
+    color: #6b7280;
+    line-height: 1.65;
+    margin: 0;
+}
+
+/* card footer */
+.catprod-card-footer {
+    margin-top: auto;
+    padding-top: 1.25rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.catprod-whatsapp {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #25D366;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border: 1px solid rgba(37, 211, 102, 0.25);
+    border-radius: 8px;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.catprod-whatsapp:hover {
+    background: rgba(37, 211, 102, 0.08);
+    border-color: rgba(37, 211, 102, 0.5);
+}
+
+.catprod-rating {
+    font-size: 0.75rem;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.catprod-rating-star {
+    color: #f59e0b;
+}
+
+/* ── Loading State ── */
+.catprod-loading {
+    max-width: 1280px;
+    margin: 4rem auto;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+
+.catprod-loading-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.catprod-loading-dot {
+    width: 8px;
+    height: 8px;
+    background: #3a86ff;
+    border-radius: 50%;
+    animation: dotBounce 1.2s ease-in-out infinite;
+}
+
+.catprod-loading-dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.catprod-loading-dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes dotBounce {
+
+    0%,
+    80%,
+    100% {
+        transform: scale(0.6);
+        opacity: 0.4;
+    }
+
+    40% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.catprod-loading-text {
+    font-size: 0.78rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: #374151;
+}
+
+/* ── Empty State ── */
+.catprod-empty {
+    max-width: 1280px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+    background: #111115;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-top: 2px solid rgba(58, 134, 255, 0.4);
+    border-radius: 14px;
+    padding: 5rem 3rem;
+    text-align: center;
+}
+
+.catprod-empty h3 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 0.75rem 0;
+}
+
+.catprod-empty p {
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin: 0 0 2rem 0;
+    line-height: 1.7;
+}
+
+.catprod-empty-btn {
+    background: #2563eb;
+    color: #ffffff;
+    border: none;
+    padding: 1rem 2.5rem;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.82rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.catprod-empty-btn:hover {
+    background: #3b82f6;
+    transform: translateY(-2px);
+}
+
+/* ── Responsive ── */
+@media (max-width: 1100px) {
+    .catprod-page {
+        padding: 6rem 2.5rem 6rem;
+    }
+
+    .catprod-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .catprod-page {
+        padding: 6rem 1.25rem 4rem;
+    }
+
+    .catprod-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .catprod-card-img-wrap {
+        height: 200px;
+    }
+}

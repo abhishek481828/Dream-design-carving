@@ -1,193 +1,232 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { fetchProductDetails } from "../services/api";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
+import { FaArrowLeft, FaWhatsapp, FaShoppingCart } from "react-icons/fa";
+import "./ProductDetails.css";
 
-const ProductDetails = () => {
+export default function ProductDetails() {
   const location = useLocation();
   const navigate = useNavigate();
-  // Prioritize state passed from navigation, but if not available, fetch by ID? 
-  // Wait, location.state.product might not have reviews if list API didn't include them.
-  // Best to fetch fresh details always to get latest reviews.
   const passedProduct = location.state?.product;
 
   const [product, setProduct] = useState(passedProduct || null);
   const [loading, setLoading] = useState(!passedProduct);
   const [fullscreenIdx, setFullscreenIdx] = useState(null);
 
-  const [reviewSubmitting, setReviewSubmitting] = useState(false);
+    // Favorite state
+    const [isFavorite, setIsFavorite] = useState(false);
+
+    // Check if product is favorite (localStorage for demo)
+    useEffect(() => {
+      if (product?._id) {
+        const favs = JSON.parse(localStorage.getItem('favoriteProducts') || '[]');
+        setIsFavorite(favs.includes(product._id));
+      }
+    }, [product]);
+
+    // Mark/unmark favorite
+    const toggleFavorite = () => {
+      if (!product?._id) return;
+      let favs = JSON.parse(localStorage.getItem('favoriteProducts') || '[]');
+      if (isFavorite) {
+        favs = favs.filter(id => id !== product._id);
+      } else {
+        favs.unshift(product._id); // Add to front
+      }
+      localStorage.setItem('favoriteProducts', JSON.stringify(favs));
+      setIsFavorite(!isFavorite);
+    };
 
   useEffect(() => {
     if (passedProduct?._id) {
-      loadProductData(passedProduct._id);
+      (async () => {
+        try {
+          setLoading(true);
+          const data = await fetchProductDetails(passedProduct._id);
+          setProduct(data);
+        } catch (err) {
+          console.error(err);
+          toast.error("Failed to load product details");
+        } finally {
+          setLoading(false);
+        }
+      })();
     }
   }, [passedProduct]);
 
-  const loadProductData = async (id) => {
-    try {
-      setLoading(true);
-      const data = await fetchProductDetails(id);
-      setProduct(data);
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to load product details");
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Close lightbox on Escape key
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === "Escape") setFullscreenIdx(null); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
+  // Normalise images: backend sends 'image' string, or 'images' array
+  const productImages =
+    product?.images?.length
+      ? product.images
+      : product?.image
+        ? [{ url: product.image, description: product.description || product.name }]
+        : [];
 
-  if (!product && !loading) {
-    return (
-      <div style={{ padding: "2rem", textAlign: "center" }}>
-        <h1>No Product Selected</h1>
-        <button onClick={() => navigate(-1)} style={{ marginTop: "1rem" }}>Go Back</button>
+  /* ── Loading ── */
+  if (loading) return (
+    <div className="pd-page">
+      <div className="pd-loading">
+        <div className="pd-loading-dots">
+          <div className="pd-loading-dot" />
+          <div className="pd-loading-dot" />
+          <div className="pd-loading-dot" />
+        </div>
+        <p className="pd-loading-text">Loading product…</p>
       </div>
-    );
-  }
+    </div>
+  );
 
-  // Handle data structure mismatch: Backend uses 'image' (string), Frontend expected 'images' (array)
-  const productImages = product?.images || (product?.image ? [{ url: product.image, description: product.description || product.name }] : []);
-
-  const responsiveStyles = `
-    @media (max-width: 768px) {
-      .product-details-container {
-        padding: 1rem !important;
-      }
-
-      .product-details-title {
-        font-size: 2rem !important;
-        margin-bottom: 2rem !important;
-      }
-
-      .product-details-images {
-        gap: 1rem !important;
-      }
-
-      .product-details-images img {
-        width: 100% !important;
-        max-width: 300px !important;
-      }
-
-      .product-details-description {
-        font-size: 1rem !important;
-        padding: 1rem !important;
-        margin-bottom: 2rem !important;
-      }
-
-      .fullscreen-content h2 {
-        font-size: 1.5rem !important;
-      }
-
-      .fullscreen-content p {
-        font-size: 1rem !important;
-      }
-
-      .fullscreen-close-btn {
-        top: 15px !important;
-        right: 15px !important;
-        width: 40px !important;
-        height: 40px !important;
-        font-size: 20px !important;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .product-details-title {
-        font-size: 1.75rem !important;
-      }
-
-      .product-details-images img {
-        width: 100% !important;
-      }
-
-      .product-details-description {
-        font-size: 0.95rem !important;
-      }
-    }
-  `;
+  /* ── No product ── */
+  if (!product) return (
+    <div className="pd-page">
+      <div className="pd-wrap" style={{ textAlign: "center", paddingTop: "4rem" }}>
+        <h2 style={{ color: "#fff", marginBottom: "1rem" }}>No product selected.</h2>
+        <button className="pd-back" onClick={() => navigate(-1)}>← Go Back</button>
+      </div>
+    </div>
+  );
 
   return (
-    <>
-      <style>{responsiveStyles}</style>
-      <div className="product-details-container" style={{ padding: "2rem", maxWidth: "1200px", margin: "0 auto" }}>
-        <button onClick={() => navigate(-1)} style={{ marginBottom: "2rem", padding: "8px 16px", cursor: "pointer" }}>&larr; Go Back</button>
+    <div className="pd-page">
 
-        {product && (
-          <>
-            <h1 className="product-details-title" style={{ textAlign: "center", marginBottom: "3rem", color: "#f1f5f9", fontSize: "2.5rem", fontWeight: 700 }}>{product.name}</h1>
+      {/* ── Back ── */}
+      <button className="pd-back" onClick={() => navigate(-1)}>
+        <FaArrowLeft size={10} /> Back
+      </button>
 
-            <div className="product-details-images" style={{ display: "flex", justifyContent: "center", gap: "1.5rem", flexWrap: "wrap", margin: "0 auto 2rem" }}>
-              {productImages.map((imgObj, idx) => (
-                <div key={idx} style={{ textAlign: "center", marginBottom: "2rem" }}>
-                  <img
-                    src={imgObj.url}
-                    alt={product.name + " " + (idx + 1)}
-                    style={{ width: "300px", height: "auto", objectFit: "cover", borderRadius: 8, boxShadow: "0 4px 12px rgba(0,0,0,0.3)", cursor: "pointer" }}
-                    onClick={() => setFullscreenIdx(idx)}
-                  />
-                </div>
-              ))}
-            </div>
+      <div className="pd-wrap">
 
-            <p className="product-details-description" style={{ textAlign: "center", maxWidth: "800px", margin: "0 auto 4rem", color: "#94a3b8", fontSize: "1.1rem", lineHeight: 1.8, background: "rgba(30, 41, 59, 0.3)", padding: "1.5rem", borderRadius: "12px" }}>
-              {product.description}
-            </p>
+        {/* ── Header ── */}
+        <div className="pd-header">
+          <span className="pd-tag">Product Detail</span>
+          <h1 className="pd-title">{product.name}</h1>
+          {product.description && (
+            <p className="pd-desc">{product.description}</p>
+          )}
+        </div>
 
-          </>
-        )}
-
-        {fullscreenIdx !== null && (
-          <div
-            style={{
-              position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh",
-              background: "rgba(0,0,0,0.95)", zIndex: 2000, display: "flex",
-              flexDirection: "column", alignItems: "center", justifyContent: "center",
-              backdropFilter: "blur(10px)"
-            }}
-            onClick={() => setFullscreenIdx(null)}
-          >
-            <div style={{ position: "relative", maxWidth: "90vw", maxHeight: "80vh", display: "flex", flexDirection: "column", alignItems: "center" }}>
-              <img
-                src={productImages[fullscreenIdx].url}
-                alt={product.name}
-                style={{ maxWidth: "100%", maxHeight: "70vh", borderRadius: 12, boxShadow: "0 10px 30px rgba(0,0,0,0.5)", marginBottom: "1.5rem" }}
-                onClick={(e) => e.stopPropagation()}
-              />
-
+        {/* ── Image grid (multiple images) ── */}
+        {productImages.length > 1 && (
+          <div className="pd-images">
+            {productImages.map((imgObj, idx) => (
               <div
-                style={{
-                  textAlign: "center", maxWidth: "800px", color: "white",
-                  fontFamily: "'Inter', 'Segoe UI', Roboto, sans-serif"
-                }}
-                onClick={(e) => e.stopPropagation()}
+                key={idx}
+                className="pd-img-tile"
+                onClick={() => setFullscreenIdx(idx)}
               >
-                <h2 style={{ fontSize: "1.8rem", marginBottom: "0.5rem", fontWeight: 600 }}>{product.name}</h2>
-                <p style={{ fontSize: "1.1rem", color: "#cbd5e1", lineHeight: 1.6, fontWeight: 400 }}>
-                  {product.description}
-                </p>
+                <img
+                  src={imgObj.url}
+                  alt={`${product.name} ${idx + 1}`}
+                  loading="lazy"
+                />
               </div>
-            </div>
-
-            <button
-              onClick={() => setFullscreenIdx(null)}
-              style={{
-                position: "fixed", top: 30, right: 30, zIndex: 2100, fontSize: 24,
-                background: "rgba(255,255,255,0.1)", color: "white", border: "1px solid rgba(255,255,255,0.2)",
-                borderRadius: "50%", width: "50px", height: "50px", cursor: "pointer",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                transition: "background 0.3s"
-              }}
-              onMouseOver={(e) => e.currentTarget.style.background = "rgba(255,255,255,0.2)"}
-              onMouseOut={(e) => e.currentTarget.style.background = "rgba(255,255,255,0.1)"}
-            >
-              &times;
-            </button>
+            ))}
           </div>
         )}
-      </div>
-    </>
-  );
-};
 
-export default ProductDetails;
+        {/* ── Single image hero ── */}
+        {productImages.length === 1 && (
+          <img
+            className="pd-hero-img"
+            src={productImages[0].url}
+            alt={product.name}
+            onClick={() => setFullscreenIdx(0)}
+          />
+        )}
+
+        {/* ── Action Buttons ── */}
+        <div className="pd-cta">
+          <div className="pd-cta-text">
+            <h3>Love this piece?</h3>
+            <p>
+              Order it directly or enquire on WhatsApp for customisation,
+              dimensions, or a personalised quote.
+            </p>
+          </div>
+          <div className="pd-cta-actions">
+            <button
+              className="pd-buy-btn"
+              onClick={() =>
+                navigate("/order", {
+                  state: {
+                    prefill: {
+                      designName: product.name || "",
+                      material: product.material || "",
+                      notes: product.description
+                        ? `Interested in: ${product.name}. ${product.description}`
+                        : `Interested in: ${product.name}`,
+                      imageUrl: productImages[0]?.url || "",
+                    },
+                  },
+                })
+              }
+            >
+              <FaShoppingCart size={14} /> Buy Now
+            </button>
+            <a
+              href={`https://wa.me/9779840028822?text=Hi! I'm interested in: ${encodeURIComponent(product.name)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="pd-cta-btn"
+            >
+              <FaWhatsapp size={16} /> WhatsApp
+            </a>
+            {/* Favorite button at the side of WhatsApp */}
+            <button
+              className={`pd-fav-btn${isFavorite ? ' fav' : ''}`}
+              onClick={toggleFavorite}
+              aria-label={isFavorite ? 'Unmark favorite' : 'Mark as favorite'}
+              title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+              style={{ marginLeft: 12, background: '#222', border: 'none', borderRadius: '50%', padding: '8px', boxShadow: '0 2px 8px #0002' }}
+            >
+              <span style={{ color: isFavorite ? '#e63946' : '#fff', fontSize: '1.5rem' }}>
+                {isFavorite ? '❤️' : '🤍'}
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Lightbox ── */}
+      {fullscreenIdx !== null && productImages[fullscreenIdx] && (
+        <div className="pd-lightbox" onClick={() => setFullscreenIdx(null)}>
+          <div
+            className="pd-lightbox-inner"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              className="pd-lightbox-img"
+              src={productImages[fullscreenIdx].url}
+              alt={product.name}
+            />
+            <div className="pd-lightbox-info">
+              <h2>{product.name}</h2>
+              {productImages[fullscreenIdx].description && (
+                <p>{productImages[fullscreenIdx].description}</p>
+              )}
+            </div>
+          </div>
+
+          {/* Close button */}
+          <button
+            className="pd-lightbox-close"
+            onClick={() => setFullscreenIdx(null)}
+            aria-label="Close"
+          >
+            ✕
+          </button>
+
+          <span className="pd-lightbox-hint">Click outside or press Esc to close</span>
+        </div>
+      )}
+    </div>
+  );
+}
